@@ -9,13 +9,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Number: 2016014537
  */
 
-@Controller
-public class Test {
 
-    @RequestMapping("/test")
-    public String test(){
+@Controller
+public class Index {
+
+
+    @RequestMapping("/index")
+    public String index(){
+
         return "demo1/index";
     }
 
+
+    @RequestMapping("night_index")
+    public String night_index(){
+
+
+        return "demo2/index";
+    }
 
 }
