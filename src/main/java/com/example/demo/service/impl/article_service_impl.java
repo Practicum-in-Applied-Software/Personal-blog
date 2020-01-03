@@ -22,7 +22,12 @@ public class article_service_impl implements article_service {
     private article_mapper ArticleMapper;
 
     @Override
-    public List<ArticleList> article_list_query(String author){
-        return ArticleMapper.query_article_list(author);
+    public List<ArticleList> query_article_list(String author){
+        return ArticleMapper.query_article_list_mapper(author);
+    }
+
+    @Override
+    public void insert_data_into_article_list(ArticleList articleList){
+        ArticleMapper.insert_data_into_article_list_mapper(articleList);
     }
 }

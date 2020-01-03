@@ -14,9 +14,15 @@ public interface article_service {
     /**
      *
      * @param author 作者
-     * @return 给出作者返回作者的所以文章
+     * @return 给出作者返回作者的所有的文章
      */
 
-    public List<ArticleList> article_list_query(String author);
+    public List<ArticleList> query_article_list(String author);
 
+
+    /**
+     * 在数据库中插入文章数据
+     * @param articleList 需要插入的数据
+     */
+    public void insert_data_into_article_list(ArticleList articleList);
 }

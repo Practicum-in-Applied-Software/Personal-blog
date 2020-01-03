@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.domain.ArticleList;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -23,6 +24,14 @@ public interface article_mapper {
      */
 
     @Select("select article_id,author,title,tags,content,createTime,updateTime,access_count,visible from article where author=#{author}")
-    public List<ArticleList> query_article_list(String author);
+    public List<ArticleList> query_article_list_mapper(String author);
+
+
+    /**
+     * 在数据库中插入文章数据
+     * @param articleList 需要插入的数据
+     */
+    @Insert("insert into article (author,title,tags,content,createTime,updateTime,access_count,visible) values (#{author},#{title},#{tags},#{content},#{createTime},#{updateTime},#{access_count},#{visible})")
+    public void insert_data_into_article_list_mapper(ArticleList articleList);
 
 }
