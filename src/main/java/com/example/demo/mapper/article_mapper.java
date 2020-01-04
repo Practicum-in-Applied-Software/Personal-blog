@@ -53,4 +53,14 @@ public interface article_mapper {
      */
     @Select("select username from user where privilege=#{prvilege}")
     public List<String> query_username_according_to_privilege_mapper(int prvilege);
+
+
+    /**
+     *
+     * 查询文章id为article_id的信息
+     * @param article_id 文章的id
+     * @return 返回文章信息
+     */
+    @Select("select * from article where article_id=#{article_id}")
+    public ArticleList query_article_according_to_article_id_mapper(int article_id);
 }

@@ -45,4 +45,12 @@ public interface article_service {
      * @return 返回用户名
      */
     public List<String> query_username_according_to_privilege(int prvilege);
+
+    /**
+     *
+     * 查询文章id为article_id的信息
+     * @param article_id 文章的id
+     * @return 返回文章信息
+     */
+    public ArticleList query_article_according_to_article_id(int article_id);
 }

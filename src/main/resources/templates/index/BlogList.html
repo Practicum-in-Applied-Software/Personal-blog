@@ -446,7 +446,6 @@
 												<table id="myTable" class="display">
 													<thead>
 														<tr>
-															<th>文章id</th>
 															<th>标题</th>
 															<th>作者</th>
 															<th>所属类别</th>
@@ -459,10 +458,6 @@
 
 													<tbody>
 														<tr th:each="item:${articleLists}">
-															<td>
-																<a th:if="${item.isVisible()==true}" th:href="@{'/article/view/'+${item.getArticle_id()}}" th:text="${item.getArticle_id()}"></a>
-																<a th:if="${item.isVisible()==false}" th:text="${item.getArticle_id()}"></a>
-															</td>
 															<td>
 																<a th:if="${item.isVisible()==true}" th:href="@{'/article/view/'+${item.getArticle_id()}}" th:text="${item.getTitle()}"></a>
 																<a th:if="${item.isVisible()==false}" th:text="${item.getTitle()}"></a>

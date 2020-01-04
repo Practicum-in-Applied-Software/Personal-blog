@@ -8,10 +8,7 @@ import com.example.demo.service.article_service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -221,6 +218,23 @@ public class ArticleManagement {
         return "redirect:/bloglist";
     }
 
+    @RequestMapping("/article/access_limit")
+    public String access_limit(){
+        return "/index/access_limit";
+    }
+
+    @RequestMapping("/article/view/{article_id}")
+    public String article_view(@PathVariable("article_id") int article_id,ModelMap model){
+
+        ArticleList article=ArticleService.query_article_according_to_article_id(article_id);
+
+        if(article==null || !article.isVisible()){
+            return "redirect:/article/access_limit";
+        }
+
+        model.addAttribute("article",article);
+        return "/index/articleview";
+    }
 
     /**
      * 和数据库中的信息进行对比，对Cookie进行验证，防止伪造Cookie
