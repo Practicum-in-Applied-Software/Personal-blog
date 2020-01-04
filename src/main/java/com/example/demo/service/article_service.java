@@ -25,4 +25,17 @@ public interface article_service {
      * @param articleList 需要插入的数据
      */
     public void insert_data_into_article_list(ArticleList articleList);
+
+    /**
+     * 把文章id为article_id的文章的状态更新为visible状态
+     * @param article_id 文章id
+     * @param visible 更新后的文章状态
+     */
+    public void update_article_status(int article_id,boolean visible);
+
+    /**
+     * 删除文章id为article_id的文章
+     * @param article_id 需要删除的文章的id
+     */
+    public void delete_article(int article_id);
 }

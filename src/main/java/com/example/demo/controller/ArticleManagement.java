@@ -26,7 +26,11 @@ public class ArticleManagement {
     @Autowired
     private article_service ArticleService;
 
-
+    /***
+     * 博客列表页面，用户暂定为admin
+     * @param modelMap 页面上要显示的元素
+     * @return 返回博客列表页面
+     */
     @RequestMapping("/bloglist")
     public String BlogList(ModelMap modelMap){
 
@@ -87,7 +91,14 @@ public class ArticleManagement {
         return "index/AddArticle";
     }
 
-
+    /**
+     * 用于添加文章到数据库，用户暂定为admin
+     * @param article_name 文章标题（不能为空）
+     * @param article_tags 文章标签（可以为空）
+     * @param content 文章内容（可以为空）
+     * @param article_status 文章状态，可见或不可见（公开或私有）
+     * @return 返回主页
+     */
     @RequestMapping(value = "/addarticle_to_database",method = RequestMethod.POST)
     public String AddArticleToDatabase(@RequestParam("article_name") String article_name,@RequestParam("article_tags") String article_tags,@RequestParam("editor-markdown-doc") String content,@RequestParam("article_status") String article_status){
 
@@ -119,5 +130,30 @@ public class ArticleManagement {
     public String CurrentTime(){
         SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return df.format(new Date());
+    }
+
+
+    /**
+     * 用于改变文章状态，例如将公开改为私有，将私有改为公开
+     * @param article_id 文章id
+     * @param article_status 文章当前状态
+     * @return 返回博客列表页面
+     */
+    @RequestMapping(value = "/flip_visible",method = RequestMethod.POST)
+    public String flip_visible(@RequestParam("article_id") int article_id,@RequestParam("article_status") boolean article_status){
+        article_status=!article_status;
+        ArticleService.update_article_status(article_id,article_status);
+        return "redirect:/bloglist";
+    }
+
+    /**
+     * 用于删除指定id的文章
+     * @param article_id 文章id
+     * @return 返回博客列表页面
+     */
+    @RequestMapping(value = "/delete_article",method = RequestMethod.POST)
+    public String delete_article(@RequestParam("article_id") int article_id){
+        ArticleService.delete_article(article_id);
+        return "redirect:/bloglist";
     }
 }

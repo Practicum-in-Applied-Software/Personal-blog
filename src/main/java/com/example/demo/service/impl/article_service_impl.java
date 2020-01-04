@@ -30,4 +30,14 @@ public class article_service_impl implements article_service {
     public void insert_data_into_article_list(ArticleList articleList){
         ArticleMapper.insert_data_into_article_list_mapper(articleList);
     }
+
+    @Override
+    public void update_article_status(int article_id,boolean visible){
+        ArticleMapper.update_article_status_mapper(article_id,visible);
+    }
+
+    @Override
+    public void delete_article(int article_id){
+        ArticleMapper.delete_article_mapper(article_id);
+    }
 }
