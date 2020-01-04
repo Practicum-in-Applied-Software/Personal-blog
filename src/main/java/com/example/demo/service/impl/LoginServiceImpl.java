@@ -13,7 +13,7 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private LoginMapper loginMapper;
     @Override
-    public List<User> User_query(String username) {
+    public User User_query(String username) {
         return loginMapper.user_query(username);
     }
 }

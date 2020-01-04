@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -18,9 +17,11 @@ public class Register{
 
     @Autowired
     private RegisterService registerService;
+
+
     @RequestMapping(value="/register")
     public String register(){
-        return "/register";
+        return "login_register/register";
     }
 
     @RequestMapping(value="/register_info",method = RequestMethod.POST)
@@ -30,9 +31,9 @@ public class Register{
 //        两次密码不一样
         if(pwd.equals(pwd_check))
         {
-            List<User> user=loginService.User_query(name);
+            User user=loginService.User_query(name);
 //        无同名用户
-            if(user.size()==0)
+            if(user==null)
             {
                 map.put("num","1");
                 int privilege=0;

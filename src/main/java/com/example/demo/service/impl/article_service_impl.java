@@ -22,8 +22,8 @@ public class article_service_impl implements article_service {
     private article_mapper ArticleMapper;
 
     @Override
-    public List<ArticleList> query_article_list(String author){
-        return ArticleMapper.query_article_list_mapper(author);
+    public List<ArticleList> query_article_according_to_username(String author){
+        return ArticleMapper.query_article_according_to_username_mapper(author);
     }
 
     @Override
@@ -39,5 +39,10 @@ public class article_service_impl implements article_service {
     @Override
     public void delete_article(int article_id){
         ArticleMapper.delete_article_mapper(article_id);
+    }
+
+    @Override
+    public List<String> query_username_according_to_privilege(int privilege){
+        return ArticleMapper.query_username_according_to_privilege_mapper(privilege);
     }
 }

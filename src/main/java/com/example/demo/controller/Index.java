@@ -21,7 +21,7 @@ public class Index {
     }
 
 
-    @RequestMapping("night_index")
+    @RequestMapping("/night_index")
     public String night_index(){
 
 

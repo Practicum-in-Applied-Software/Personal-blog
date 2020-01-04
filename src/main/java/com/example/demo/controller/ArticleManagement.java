@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.ArticleList;
+import com.example.demo.domain.User;
+import com.example.demo.service.CookiesService;
+import com.example.demo.service.LoginService;
 import com.example.demo.service.article_service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,18 +29,55 @@ public class ArticleManagement {
     @Autowired
     private article_service ArticleService;
 
+    @Autowired
+    private CookiesService cookiesService;
+
+    @Autowired
+    private LoginService loginService;
+
+
     /***
-     * 博客列表页面，用户暂定为admin
+     * 博客列表页面
      * @param modelMap 页面上要显示的元素
      * @return 返回博客列表页面
      */
     @RequestMapping("/bloglist")
     public String BlogList(ModelMap modelMap){
 
-        List<ArticleList> articleLists=DataCut(ArticleService.query_article_list("admin"));//admin为暂时的用户
+        String username=CookieCheck();
+        System.out.println(username);
 
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        String privilege=cookiesService.getCookies("privilege");
+
+        List<ArticleList> articleLists=ArticleService.query_article_according_to_username(username);
+
+        if(privilege.equals("1")||privilege.equals("2")){
+            articleLists=ArticleService.query_article_according_to_username(username);
+            List<String> alluser=ArticleService.query_username_according_to_privilege(0);
+            for(String item:alluser){
+                List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
+                for(ArticleList article:tmp){
+                    articleLists.add(article);
+                }
+            }
+        }
+
+        if(privilege.equals("2")){
+            List<String> alluser=ArticleService.query_username_according_to_privilege(1);
+            for(String item:alluser){
+                List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
+                for(ArticleList article:tmp){
+                    articleLists.add(article);
+                }
+            }
+        }
+
+        articleLists=DataCut(articleLists);
         modelMap.addAttribute("articleLists",articleLists);
-
         return "index/BlogList";
     }
 
@@ -45,7 +85,7 @@ public class ArticleManagement {
     @RequestMapping("/bloglist/data")
     public List<ArticleList> BlogListData(){
 
-        List<ArticleList> articleLists=DataCut(ArticleService.query_article_list("admin"));//admin为暂时的用户
+        List<ArticleList> articleLists=DataCut(ArticleService.query_article_according_to_username("admin"));//admin为暂时的用户
 
         return articleLists;
     }
@@ -86,13 +126,17 @@ public class ArticleManagement {
 
     @RequestMapping("/addarticle")
     public String AddArticle(){
+        String username=CookieCheck();
 
+        if(username==null){
+            return "redirect:/error_page";
+        }
 
         return "index/AddArticle";
     }
 
     /**
-     * 用于添加文章到数据库，用户暂定为admin
+     * 用于添加文章到数据库
      * @param article_name 文章标题（不能为空）
      * @param article_tags 文章标签（可以为空）
      * @param content 文章内容（可以为空）
@@ -101,6 +145,12 @@ public class ArticleManagement {
      */
     @RequestMapping(value = "/addarticle_to_database",method = RequestMethod.POST)
     public String AddArticleToDatabase(@RequestParam("article_name") String article_name,@RequestParam("article_tags") String article_tags,@RequestParam("editor-markdown-doc") String content,@RequestParam("article_status") String article_status){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
 
         String currentTime=CurrentTime();
 
@@ -116,7 +166,7 @@ public class ArticleManagement {
         System.out.println(article_status);
         System.out.println(visible);
 
-        ArticleList articleList=new ArticleList(0,"admin",article_name,article_tags,content,currentTime,currentTime,0,visible);
+        ArticleList articleList=new ArticleList(0,username,article_name,article_tags,content,currentTime,currentTime,0,visible);
 
         ArticleService.insert_data_into_article_list(articleList);
         return "redirect:/index";
@@ -141,6 +191,13 @@ public class ArticleManagement {
      */
     @RequestMapping(value = "/flip_visible",method = RequestMethod.POST)
     public String flip_visible(@RequestParam("article_id") int article_id,@RequestParam("article_status") boolean article_status){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
         article_status=!article_status;
         ArticleService.update_article_status(article_id,article_status);
         return "redirect:/bloglist";
@@ -153,7 +210,41 @@ public class ArticleManagement {
      */
     @RequestMapping(value = "/delete_article",method = RequestMethod.POST)
     public String delete_article(@RequestParam("article_id") int article_id){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
         ArticleService.delete_article(article_id);
         return "redirect:/bloglist";
+    }
+
+
+    /**
+     * 和数据库中的信息进行对比，对Cookie进行验证，防止伪造Cookie
+     * @return 返回username
+     */
+    public String CookieCheck(){
+
+        String username=cookiesService.getCookies("username");
+        String privilege=cookiesService.getCookies("privilege");
+        String pwd=cookiesService.getCookies("pwd");
+
+        System.out.println("uername:"+username);
+        System.out.println("privilege:"+privilege);
+        System.out.println("pwd:"+pwd);
+
+        if(username==null || privilege==null || pwd==null){
+            return null;
+        }
+
+        //和数据库中信息进行对比
+        User user=loginService.User_query(username);
+        if(username.equals(user.getName()) && privilege.equals(String.valueOf(user.getPrivilege())) && pwd.equals(user.getPwd())){
+            return username;
+        }
+        return null;
     }
 }

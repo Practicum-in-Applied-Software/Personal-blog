@@ -17,7 +17,7 @@ public interface article_service {
      * @return 给出作者返回作者的所有的文章
      */
 
-    public List<ArticleList> query_article_list(String author);
+    public List<ArticleList> query_article_according_to_username(String author);
 
 
     /**
@@ -38,4 +38,11 @@ public interface article_service {
      * @param article_id 需要删除的文章的id
      */
     public void delete_article(int article_id);
+
+    /**
+     * 查询权限为privilege的所有用户的用户名
+     * @param prvilege 需要查询的权限
+     * @return 返回用户名
+     */
+    public List<String> query_username_according_to_privilege(int prvilege);
 }

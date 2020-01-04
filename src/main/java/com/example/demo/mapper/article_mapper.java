@@ -14,7 +14,6 @@ import java.util.List;
 @Mapper
 public interface article_mapper {
 
-
     /**
      *
      * @param author 作者
@@ -22,7 +21,7 @@ public interface article_mapper {
      */
 
     @Select("select article_id,author,title,tags,content,createTime,updateTime,access_count,visible from article where author=#{author}")
-    public List<ArticleList> query_article_list_mapper(String author);
+    public List<ArticleList> query_article_according_to_username_mapper(String author);
 
 
     /**
@@ -46,4 +45,12 @@ public interface article_mapper {
      */
     @Delete("delete from article where article_id=#{article_id}")
     public void delete_article_mapper(int article_id);
+
+    /**
+     * 查询权限为privilege的所有用户的用户名
+     * @param prvilege 需要查询的权限
+     * @return 返回用户名
+     */
+    @Select("select username from user where privilege=#{prvilege}")
+    public List<String> query_username_according_to_privilege_mapper(int prvilege);
 }

@@ -3,9 +3,9 @@ package com.example.demo.domain;
 public class User {
     private String name;
     private String pwd;
-    private String privilege;
+    private int privilege;
 
-    public User(String name, String pwd, String privilege) {
+    public User(String name, String pwd, int privilege) {
         this.name = name;
         this.pwd = pwd;
         this.privilege = privilege;
@@ -27,11 +27,11 @@ public class User {
         this.pwd = pwd;
     }
 
-    public String getPrivilege() {
+    public int getPrivilege() {
         return privilege;
     }
 
-    public void setPrivilege(String privilege) {
+    public void setPrivilege(int privilege) {
         this.privilege = privilege;
     }
 }
