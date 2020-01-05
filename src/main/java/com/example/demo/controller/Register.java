@@ -26,8 +26,11 @@ public class Register{
 
     @RequestMapping(value="/register_info",method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, String> register_info(@RequestParam("name") String name, @RequestParam("password") String pwd, @RequestParam("password_check") String pwd_check){
+    public Map<String, String> register_info(@RequestParam("name") String name, @RequestParam("password") String pwd, @RequestParam("password_check") String pwd_check,@RequestParam("phone") String phone,@RequestParam("email") String email,@RequestParam("sex") String sex){
         Map<String,String> map=new HashMap<String,String>();
+        System.out.println(phone);
+        System.out.println(email);
+        System.out.println(sex);
 //        两次密码不一样
         if(pwd.equals(pwd_check))
         {
@@ -37,7 +40,7 @@ public class Register{
             {
                 map.put("num","1");
                 int privilege=0;
-                registerService.user_insert(name,pwd,privilege);
+                registerService.user_insert(name,pwd,privilege,email,sex,phone);
             }
             else
             {
