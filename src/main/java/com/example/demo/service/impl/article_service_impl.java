@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.domain.ArticleList;
 import com.example.demo.mapper.article_mapper;
 import com.example.demo.service.article_service;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +53,7 @@ public class article_service_impl implements article_service {
     }
 
     @Override
-    public void update_article_access_count_according_to_article_id(int article_id,int access_count){
+    public void update_article_access_count_according_to_article_id(int article_id, int access_count){
         ArticleMapper.update_article_access_count_according_to_article_id_mapper(article_id,access_count);
     }
 

@@ -250,6 +250,8 @@ public class ArticleManagement {
         }
 
         article.setAccess_count(article.getAccess_count()+1);
+        System.out.println(article.getArticle_id());
+        System.out.println(article.getAccess_count());
         ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
         return "index/articleview";

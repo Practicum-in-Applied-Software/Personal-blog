@@ -10,7 +10,7 @@ public class RegisterServiceImpl implements RegisterService {
     @Autowired
     private RegisterMapper registerMapper;
     @Override
-    public void user_insert(String username,String password,int privilege) {
-        registerMapper.user_insert(username,password,privilege);
+    public void user_insert(String username,String password,int privilege,String email,String sex,String phone) {
+        registerMapper.user_insert(username,password,privilege,email,sex,phone);
     }
 }

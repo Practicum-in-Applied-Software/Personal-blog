@@ -1,8 +1,15 @@
 $(document).ready(function(){
     $("#register_btn").click(function(){
+        alert("oasjd")
         var username=$("#username").val();
         var pwd=$("#psw").val();
         var pwd_check=$("#psw_check").val();
+        var phone=$("#phone").val();
+        var email=$("#email").val();
+        var sex=$("#sex").val();
+        alert(phone);
+        alert(email);
+        alert(sex);
         $.ajax({
             url:"register_info",
             dataType:"json",
@@ -12,6 +19,9 @@ $(document).ready(function(){
                 name:username,
                 password:pwd,
                 password_check:pwd_check,
+                phone:phone,
+                email:email,
+                sex:sex,
             },
             success:function(res){
                 if(res.num==1)
