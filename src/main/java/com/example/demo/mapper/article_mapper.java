@@ -71,6 +71,6 @@ public interface article_mapper {
      * @param access_count 更新后的access_count
      */
     @Update("update article set access_count=#{access_count} where article_id=#{article_id}")
-    public void update_article_access_count_according_to_article_id_mapper(int article_id,int access_count);
+    public void update_article_access_count_according_to_article_id_mapper(@Param("article_id")int article_id,@Param("access_count") int access_count);
 
 }
