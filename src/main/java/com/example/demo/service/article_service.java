@@ -53,4 +53,11 @@ public interface article_service {
      * @return 返回文章信息
      */
     public ArticleList query_article_according_to_article_id(int article_id);
+
+    /**
+     * 将id为article_id的文章访问次数更新为access_count
+     * @param article_id 需要更新的文章的id
+     * @param access_count 更新后的access_count
+     */
+    public void update_article_access_count_according_to_article_id(int article_id,int access_count);
 }

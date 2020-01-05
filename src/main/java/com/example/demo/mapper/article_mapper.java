@@ -63,4 +63,14 @@ public interface article_mapper {
      */
     @Select("select * from article where article_id=#{article_id}")
     public ArticleList query_article_according_to_article_id_mapper(int article_id);
+
+
+    /**
+     * 将id为article_id的文章访问次数更新为access_count
+     * @param article_id 需要更新的文章的id
+     * @param access_count 更新后的access_count
+     */
+    @Update("update article set access_count=#{access_count} where article_id=#{article_id}")
+    public void update_article_access_count_according_to_article_id_mapper(int article_id,int access_count);
+
 }

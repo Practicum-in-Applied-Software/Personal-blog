@@ -232,6 +232,8 @@ public class ArticleManagement {
             return "redirect:/article/access_limit";
         }
 
+        article.setAccess_count(article.getAccess_count()+1);
+        ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
         return "/index/articleview";
     }
