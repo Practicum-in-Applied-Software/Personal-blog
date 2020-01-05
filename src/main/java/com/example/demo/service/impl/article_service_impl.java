@@ -55,4 +55,9 @@ public class article_service_impl implements article_service {
     public void update_article_access_count_according_to_article_id(int article_id,int access_count){
         ArticleMapper.update_article_access_count_according_to_article_id_mapper(article_id,access_count);
     }
+
+    @Override
+    public void update_article_according_to_article_id(ArticleList articleList){
+        ArticleMapper.update_article_according_to_article_id_mapper(articleList);
+    }
 }

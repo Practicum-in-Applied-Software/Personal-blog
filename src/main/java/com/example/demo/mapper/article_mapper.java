@@ -37,7 +37,7 @@ public interface article_mapper {
      * @param visible 更新后的文章状态
      */
     @Update("update article set visible=#{visible} where article_id=#{article_id}")
-    public void update_article_status_mapper(int article_id,boolean visible);
+    public void update_article_status_mapper(@Param("article_id") int article_id,@Param("visible") boolean visible);
 
     /**
      * 删除文章id为article_id的文章
@@ -72,5 +72,13 @@ public interface article_mapper {
      */
     @Update("update article set access_count=#{access_count} where article_id=#{article_id}")
     public void update_article_access_count_according_to_article_id_mapper(int article_id,int access_count);
+
+
+    /**
+     * 按照id更新article
+     * @param articleList 被更新之后的article
+     */
+    @Update("update article set title=#{title},tags=#{tags},content=#{content},updateTime=#{updateTime},visible=#{visible} where article_id=#{article_id}")
+    public void update_article_according_to_article_id_mapper(ArticleList articleList);
 
 }

@@ -220,7 +220,7 @@ public class ArticleManagement {
 
     @RequestMapping("/article/access_limit")
     public String access_limit(){
-        return "/index/access_limit";
+        return "index/access_limit";
     }
 
     @RequestMapping("/article/view/{article_id}")
@@ -228,14 +228,77 @@ public class ArticleManagement {
 
         ArticleList article=ArticleService.query_article_according_to_article_id(article_id);
 
-        if(article==null || !article.isVisible()){
+        if(article==null){
             return "redirect:/article/access_limit";
+        }
+
+        if(!article.isVisible()){
+            String username=CookieCheck();
+
+            if(username==null){
+                return "redirect:/article/access_limit";
+            }
+
+            int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+            User author=loginService.User_query(article.getAuthor());
+
+            //如果文章不可见，且文章作者的privilege大于等于查看者的privilege，则不允许查看
+            if(!username.equals(author.getName()) && privilege<=author.getPrivilege()){
+                return "redirect:/article/access_limit";
+            }
         }
 
         article.setAccess_count(article.getAccess_count()+1);
         ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
-        return "/index/articleview";
+        return "index/articleview";
+    }
+
+    @RequestMapping("/article/edit/{article_id}")
+    public String article_edit(@PathVariable("article_id") int article_id,ModelMap model){
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        ArticleList articleList=ArticleService.query_article_according_to_article_id(article_id);
+        if(articleList==null){
+            return "redirect:/error_page";
+        }
+        model.addAttribute("article",articleList);
+        return "index/EditArticle";
+    }
+
+    @RequestMapping(value = "/edit_article",method = RequestMethod.POST)
+    public String edit_article(@RequestParam("article_id") String article_id,@RequestParam("article_name") String article_name,@RequestParam("article_tags") String article_tags,@RequestParam("editor-markdown-doc") String content,@RequestParam("article_status") String article_status){
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        String currentTime=CurrentTime();
+
+        System.out.println(article_name);
+        System.out.println(article_tags);
+        System.out.println(content);
+        System.out.println(article_status);
+
+        boolean visible=false;
+
+        if(article_status.equals("visible")){
+            visible=true;
+        }
+
+        System.out.println(visible);
+        ArticleList articleList=new ArticleList(Integer.valueOf(article_id),username,article_name,article_tags,content,null,currentTime,0,visible);
+        ArticleService.update_article_according_to_article_id(articleList);
+
+        String ans="redirect:/article/view/"+article_id;
+        System.out.println(ans);
+        return ans;
     }
 
     /**
