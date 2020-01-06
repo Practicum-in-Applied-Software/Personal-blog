@@ -6,13 +6,15 @@ public class Comment {
     private String time;
     private int article_id;
     private int id;
+    private int read;
 
-    public Comment(int id,String speaker , int article_id,String content, String time ) {
+    public Comment(int id,String speaker,int article_id, String content, String time, int read) {
         this.speaker = speaker;
         this.content = content;
         this.time = time;
         this.article_id = article_id;
         this.id = id;
+        this.read = read;
     }
 
     public String getSpeaker() {
@@ -53,5 +55,13 @@ public class Comment {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
     }
 }
