@@ -310,6 +310,25 @@ public class ArticleManagement {
             return "redirect:/error_page";
         }
 
+        User user=loginService.User_query(username);
+
+        model.addAttribute("user",user);
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+
         ArticleList articleList=ArticleService.query_article_according_to_article_id(article_id);
         if(articleList==null){
             return "redirect:/error_page";

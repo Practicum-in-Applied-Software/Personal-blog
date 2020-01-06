@@ -198,12 +198,12 @@
 							<div class="collapse" id="base2">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="#">
+										<a th:href="@{'/comment_view/'+${user.getName()}}">
 											<span class="sub-item" th:text="'查看'+${user.getName()}+'的文章评论'"></span>
 										</a>
 									</li>
 									<li th:if="${user.getPrivilege()} gt 0">
-										<a href="#">
+										<a href="/comment_view/all">
 											<span class="sub-item">查看其它用户的文章评论</span>
 										</a>
 									</li>
