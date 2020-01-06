@@ -5,12 +5,14 @@ public class Comment {
     private String content;
     private String time;
     private int article_id;
+    private int id;
 
-    public Comment(String speaker, String content, String time, int article_id) {
+    public Comment(int id,String speaker , int article_id,String content, String time ) {
         this.speaker = speaker;
         this.content = content;
         this.time = time;
         this.article_id = article_id;
+        this.id = id;
     }
 
     public String getSpeaker() {
@@ -43,5 +45,13 @@ public class Comment {
 
     public void setArticle_id(int article_id) {
         this.article_id = article_id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

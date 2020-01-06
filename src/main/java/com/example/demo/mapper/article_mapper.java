@@ -99,7 +99,7 @@ public interface article_mapper {
      * 获取指定article_id下的评论
      * @param article_id 评论的文章的id
      */
-    @Select("select speaker,content,time from comment where article_id=#{article_id}")
+    @Select("select * from comment where article_id=#{article_id}")
     public List<Comment> get_comments(@Param("article_id") int article_id);
 
 
