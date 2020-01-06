@@ -57,6 +57,10 @@ public class article_service_impl implements article_service {
     public void update_article_access_count_according_to_article_id(int article_id, int access_count){
         ArticleMapper.update_article_access_count_according_to_article_id_mapper(article_id,access_count);
     }
+    @Override
+    public void update_article_according_to_article_id(ArticleList articleList){
+        ArticleMapper.update_article_according_to_article_id_mapper(articleList);
+    }
 //    评论功能
     @Override
     public void insert_comment(String speaker,int article_id,String content,String time){
@@ -64,7 +68,8 @@ public class article_service_impl implements article_service {
     }
 //    获取文章对应的所有评论
     @Override
-    public List<Comment> get_comments(int article_id){
+    public List<Comment> get_comments(int article_id) {
         return ArticleMapper.get_comments(article_id);
     }
+
 }

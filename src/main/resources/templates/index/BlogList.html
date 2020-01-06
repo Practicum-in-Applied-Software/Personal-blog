@@ -459,8 +459,7 @@
 													<tbody>
 														<tr th:each="item:${articleLists}">
 															<td>
-																<a th:if="${item.isVisible()==true}" th:href="@{'/article/view/'+${item.getArticle_id()}}" th:text="${item.getTitle()}"></a>
-																<a th:if="${item.isVisible()==false}" th:text="${item.getTitle()}"></a>
+																<a th:href="@{'/article/view/'+${item.getArticle_id()}}" th:text="${item.getTitle()}"></a>
 															</td>
 															<td th:text="${item.getAuthor()}"></td>
 															<td th:text="${item.getTags()}"></td>
@@ -485,11 +484,11 @@
                                                                 </form>
 															</td>
 															<td>
-                                                                <form action="/delete_article" method="post" style="display: inline-block;">
-                                                                    <button class="btn btn-primary" type="button" style="padding: 2px 6px;">
-                                                                        编辑
-                                                                    </button>
-                                                                </form>
+																<a th:href="@{'/article/edit/'+${item.getArticle_id()}}" target="_blank">
+																	<button class="btn btn-primary" type="button" style="padding: 2px 6px;">
+																		编辑
+																	</button>
+																</a>
                                                                 <form action="/delete_article" method="post" style="display: inline-block;">
                                                                     <input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
                                                                     <button class="btn btn-danger" type="submit" style="padding: 2px 6px;">

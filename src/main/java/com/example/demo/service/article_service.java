@@ -61,6 +61,12 @@ public interface article_service {
      * @param access_count 更新后的access_count
      */
     public void update_article_access_count_according_to_article_id(int article_id,int access_count);
+
+    /**
+     * 按照id更新article
+     * @param articleList 被更新之后的article
+     */
+    public void update_article_according_to_article_id(ArticleList articleList);
     /**
      * @Author: 蔡秉岐
      * @Class: 计科1604
@@ -79,4 +85,6 @@ public interface article_service {
      * @param article_id 评论的文章的id
      */
     public List<Comment> get_comments(int article_id);
+
+
 }
