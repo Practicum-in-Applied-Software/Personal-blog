@@ -2,17 +2,15 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>文章列表</title>
+	<title>文章评论查看</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 
 	<!-- Fonts and icons -->
-
 	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
 
 	<script src="/js/datatable.js"></script>
 	<script src="/js/jquery-3.3.1.js"></script>
 	<script src="/js/MyJs.js"></script>
-
 
 	<script>
 		WebFont.load({
@@ -28,11 +26,10 @@
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/assets/css/atlantis.min.css">
 
-	<!-- CSS Just for demo purpose, don't include it in your project -->
-	<link rel="stylesheet" href="/assets/css/demo.css">
-
 	<link rel="stylesheet" href="/css/datatables.min.css">
 
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link rel="stylesheet" href="/assets/css/demo.css">
 	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 
 </head>
@@ -77,6 +74,7 @@
 								<i class="fa fa-bell"></i>
 								<span class="notification">4</span>
 							</a>
+
 						</li>
 
 						<li class="nav-item dropdown hidden-caret">
@@ -91,7 +89,7 @@
 										<div class="user-box">
 											<div class="avatar-lg"><img src="/image/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
 											<div class="u-text">
-												<h4 th:text="${user.getName()}"></h4>
+												<h4 th:text="${user.getName()}" id="username"></h4>
 												<p class="text-muted" th:text="${user.getEmail()}"></p>
 												<a href="profile.html" class="btn btn-xs btn-secondary btn-sm">查看个人资料</a>
 											</div>
@@ -145,7 +143,7 @@
 						</div>
 					</div>
 					<ul class="nav nav-primary">
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
 								<i class="fa fa-file-text-o" aria-hidden="true"></i>
 								<p>文章管理</p>
@@ -154,7 +152,7 @@
 							<div class="collapse" id="dashboard">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="#">
+										<a href="/bloglist">
 											<span class="sub-item">文章列表</span>
 										</a>
 									</li>
@@ -189,7 +187,7 @@
 							</div>
 						</li>
 
-						<li class="nav-item">
+						<li class="nav-item active">
 							<a data-toggle="collapse" href="#base2">
 								<i class="fa fa-comments"></i>
 								<p>文章评论查看</p>
@@ -232,7 +230,6 @@
 								</ul>
 							</div>
 						</li>
-
 					</ul>
 				</div>
 			</div>
@@ -242,71 +239,43 @@
 		<div class="main-panel">
 			<div class="content">
 				<div class="page-inner">
+
 					<div class="row row-card-no-pd">
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header">
-									<div class="card-head-row card-tools-still-right">
-										<h4 class="card-title">文章列表</h4>
+									<div class="card-head-row card-tools-still-right" th:if="${view_self}==true">
+										<h4 class="card-title" th:text="${user.getName()}+'的文章评论'"></h4>
+									</div>
+									<div class="card-head-row card-tools-still-right" th:if="${view_self}==false">
+										<h4 class="card-title">他人的文章评论</h4>
 									</div>
 								</div>
 								<div class="card-body">
 									<div class="row">
 										<div class="col-md-6" style="flex: 0 0 100%;max-width: 100%;">
+
 											<div>
 
 												<table id="myTable" class="display">
 													<thead>
 														<tr>
 															<th>文章标题</th>
-															<th>作者</th>
-															<th>所属类别</th>
-															<th>内容</th>
-															<th>更新时间</th>
-															<th>状态</th>
-															<th>操作</th>
+															<th>评论者</th>
+															<th>评论内容</th>
+															<th>评论时间</th>
+															<th>是否已读</th>
 														</tr>
 													</thead>
 
 													<tbody>
-														<tr th:each="item:${articleLists}">
-															<td>
-																<a th:href="@{'/article/view/'+${item.getArticle_id()}}" th:text="${item.getTitle()}"></a>
-															</td>
-															<td th:text="${item.getAuthor()}"></td>
-															<td th:text="${item.getTags()}"></td>
-															<td th:text="${item.getContent()}"></td>
-															<td th:text="${item.getUpdateTime()}"></td>
-															<td th:if="${item.isVisible()==true}">
-																<form action="/flip_visible" method="post" style="display: inline-block;">
-																	<input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
-																	<input name="article_status" type="text" style="display: none;" th:value="${item.isVisible()}">
-																	<button class="btn btn-outline-primary center" type="submit" style="padding: 2px 6px;" onclick="javascript:alert(th:text='${item.getArticle_id()}')">
-																		公开
-																	</button>
-																</form>
-															</td>
-															<td th:if="${item.isVisible()==false}">
-                                                                <form action="/flip_visible" method="post" style="display: inline-block;">
-                                                                    <input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
-                                                                    <input name="article_status" type="text" style="display: none;" th:value="${item.isVisible()}">
-                                                                    <button class="btn btn-outline-danger center" type="submit" style="padding: 2px 6px;">
-                                                                        私有
-                                                                    </button>
-                                                                </form>
-															</td>
-															<td>
-																<a th:href="@{'/article/edit/'+${item.getArticle_id()}}" target="_blank">
-																	<button class="btn btn-primary" type="button" style="padding: 2px 6px;">
-																		编辑
-																	</button>
-																</a>
-                                                                <form action="/delete_article" method="post" style="display: inline-block;">
-                                                                    <input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
-                                                                    <button class="btn btn-danger" type="submit" style="padding: 2px 6px;">
-                                                                        删除
-                                                                    </button>
-                                                                </form>
+														<tr th:each="comment:${comments}">
+															<td th:text="${comment.getArticle_title()}"></td>
+															<td th:text="${comment.getSpeaker()}"></td>
+															<td th:text="${comment.getContent()}"></td>
+															<td th:text="${comment.getTime()}"></td>
+															<td th:text="${comment.isIs_read()}">
+
 															</td>
 														</tr>
 													</tbody>
@@ -325,7 +294,7 @@
 		</div>
 
 	</div>
-	<!--   Core JS Files   -->
+
 	<script src="/assets/js/core/popper.min.js"></script>
 	<script src="/assets/js/core/bootstrap.min.js"></script>
 
@@ -365,5 +334,6 @@
 	<!-- Atlantis DEMO methods, don't include it in your project! -->
 	<script src="/assets/js/setting-demo.js"></script>
 	<script src="/assets/js/demo.js"></script>
+
 </body>
 </html>
