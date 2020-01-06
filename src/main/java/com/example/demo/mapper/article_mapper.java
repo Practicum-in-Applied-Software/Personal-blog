@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.domain.ArticleList;
+import com.example.demo.domain.Comment;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -73,12 +74,33 @@ public interface article_mapper {
     @Update("update article set access_count=#{access_count} where article_id=#{article_id}")
     public void update_article_access_count_according_to_article_id_mapper(@Param("article_id")int article_id,@Param("access_count") int access_count);
 
-
     /**
      * 按照id更新article
      * @param articleList 被更新之后的article
      */
     @Update("update article set title=#{title},tags=#{tags},content=#{content},updateTime=#{updateTime},visible=#{visible} where article_id=#{article_id}")
     public void update_article_according_to_article_id_mapper(ArticleList articleList);
+
+    /**
+     * @Author: 蔡秉岐
+     * @Class: 计科1604
+     * @Number: 2016014393
+     */
+    /**
+     * 插入用户评论
+     * @param article_id 评论的文章的id
+     * @param content 评论内容
+     * @param time 评论时间
+     * @param speaker 评论者
+     */
+    @Insert("insert into comment (speaker,article_id,content,time) values (#{speaker},#{article_id},#{content},#{time})")
+    public void insert_comment(@Param("speaker") String speaker,@Param("article_id")int article_id,@Param("content") String content,@Param("time") String time);
+    /**
+     * 获取指定article_id下的评论
+     * @param article_id 评论的文章的id
+     */
+    @Select("select speaker,content,time from comment where article_id=#{article_id}")
+    public List<Comment> get_comments(@Param("article_id") int article_id);
+
 
 }

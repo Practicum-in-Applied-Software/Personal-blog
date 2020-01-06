@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.ArticleList;
+import com.example.demo.domain.Comment;
 import com.example.demo.domain.User;
 import com.example.demo.service.CookiesService;
 import com.example.demo.service.LoginService;
@@ -31,7 +32,6 @@ public class ArticleManagement {
 
     @Autowired
     private LoginService loginService;
-
 
     /***
      * 博客列表页面
@@ -363,5 +363,28 @@ public class ArticleManagement {
             return username;
         }
         return null;
+    }
+    /**
+     * 获取评论区内容
+     */
+    @ResponseBody
+    @RequestMapping(value = "/get_comments")
+    public String get_comments(){
+        return "skjafl";
+    }
+    /**
+     * 获取发表评论区内容并加到数据库
+     */
+    @RequestMapping(value = "/upload_comment",method = RequestMethod.POST)
+    public void upload_article(@RequestParam("article_id") int article_id,@RequestParam("comment") String comment){
+            System.out.println("++++++++++++");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();
+            String time = simpleDateFormat.format(date);
+            String speaker=CookieCheck();
+            ArticleService.insert_comment(speaker,article_id,comment,time);
+            String url="/article/view/"+article_id;
+//            return "redirect:"+url;
+
     }
 }
