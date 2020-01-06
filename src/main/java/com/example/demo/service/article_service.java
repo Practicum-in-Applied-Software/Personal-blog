@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.ArticleList;
+import com.example.demo.domain.Comment;
 
 import java.util.List;
 
@@ -60,4 +61,22 @@ public interface article_service {
      * @param access_count 更新后的access_count
      */
     public void update_article_access_count_according_to_article_id(int article_id,int access_count);
+    /**
+     * @Author: 蔡秉岐
+     * @Class: 计科1604
+     * @Number: 2016014393
+     */
+    /**
+     * 插入用户评论
+     * @param article_id 评论的文章的id
+     * @param content 评论内容
+     * @param time 评论时间
+     * @param speaker 评论者
+     */
+    public void insert_comment(String speaker,int article_id,String content,String time);
+    /**
+     * 获取指定article_id下的评论
+     * @param article_id 评论的文章的id
+     */
+    public List<Comment> get_comments(int article_id);
 }

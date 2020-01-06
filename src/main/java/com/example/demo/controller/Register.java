@@ -31,6 +31,24 @@ public class Register{
         System.out.println(phone);
         System.out.println(email);
         System.out.println(sex);
+//        电话号码格式验证
+        if(phone.length()!=11)
+        {
+            map.put("num","4");
+            return map;
+        }
+//        简单邮箱格式验证
+        if(!email.contains("@"))
+        {
+            map.put("num","5");
+            return map;
+        }
+//        性别验证
+        if(!sex.equals("boy")||!sex.equals("girl"))
+        {
+            map.put("num","6");
+            return map;
+        }
 //        两次密码不一样
         if(pwd.equals(pwd_check))
         {

@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.domain.ArticleList;
+import com.example.demo.domain.Comment;
 import com.example.demo.mapper.article_mapper;
 import com.example.demo.service.article_service;
 import org.apache.ibatis.annotations.Param;
@@ -55,5 +56,15 @@ public class article_service_impl implements article_service {
     @Override
     public void update_article_access_count_according_to_article_id(int article_id, int access_count){
         ArticleMapper.update_article_access_count_according_to_article_id_mapper(article_id,access_count);
+    }
+//    评论功能
+    @Override
+    public void insert_comment(String speaker,int article_id,String content,String time){
+        ArticleMapper.insert_comment(speaker,article_id,content,time);
+    }
+//    获取文章对应的所有评论
+    @Override
+    public List<Comment> get_comments(int article_id){
+        return ArticleMapper.get_comments(article_id);
     }
 }
