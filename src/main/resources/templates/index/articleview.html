@@ -14,7 +14,7 @@
     <script src="/js/prettify.min.js"></script>
     <script src="/js/marked.min.js"></script>
     <script src="/editormd/editormd.js"></script>
-    <script src="./../js/comment.js"></script>
+    <script src="/js/comment.js"></script>
 </head>
 
 <body>
@@ -43,7 +43,7 @@
 
             <section id="main" style="float: none;">
                 <div id="main-article">
-                    <article class="article article-type-post" style="margin-top: 80px;">
+                    <article class="article article-type-post" style="margin-top: 80px;margin-bottom: 0;">
                         <div class="article-inner">
                             <header class="article-header">
 
@@ -95,24 +95,21 @@
             </section>
             <hr>
             <!--评论区-->
-            <h2 style="margin-left: 5%">评论区</h2>
-            <div id="comment_block">
-
-            </div>
-            <div >
-                <article class="article article-type-post" style="margin-top: 20px;">
+            <h2 style="font-size: 25px">评论区</h2>
+            <div th:each="comment:${comments}">
+                <article class="article article-type-post" style="margin-top: 10px;">
                     <div class="article-inner">
                         <header class="article-header">
                             <div class="article-meta">
 
                                 <div style="text-transform: none;margin-right: 25px;">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                                    <span th:text="${article.getAuthor()}"></span>
+                                    <span th:text="${comment.getSpeaker()}"></span>
                                 </div>
 
                                 <div class="article-date" style="margin-right: 25px;">
                                     <i class="fa fa-calendar"></i>
-                                    <time th:text="${article.getCreateTime()}"></time>
+                                    <time th:text="${comment.getTime()}"></time>
                                 </div>
                             </div>
 
@@ -120,7 +117,7 @@
 
                         <div class="article-entry">
                             <div>
-                                <p th:text="${article.getContent()}"></p>
+                                <p th:text="${comment.getContent()}"></p>
                             </div>
 
                         </div>
@@ -131,7 +128,7 @@
             <!--发表评论区-->
             <section>
                 <h2 style="margin-left: 25%">评论发表区</h2>
-                <!--<form action="/upload_comment" method="post">-->
+                <form action="/upload_comment" method="post">
                 <div>
                     <input id="article_id" name="article_id" type="text" class="form-control" th:value="${article.getArticle_id()}" style="width: 0px;padding: 0;border: 0;">
                     <!--<span  display></span>-->
@@ -142,7 +139,7 @@
                     <button type="submit" class="btn btn-success" style="margin-left: 70%" id="comment_btn">提交</button>
                 </div>
 
-                <!--</form>-->
+                </form>
             </section>
         </div>
 

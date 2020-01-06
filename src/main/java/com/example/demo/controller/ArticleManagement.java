@@ -296,6 +296,9 @@ public class ArticleManagement {
         System.out.println(article.getAccess_count());
         ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
+        List<Comment> comments=CommentService.get_comments(article_id);
+        System.out.println(comments);
+        model.addAttribute("comments",comments);
         return "index/articleview";
     }
 
@@ -373,9 +376,12 @@ public class ArticleManagement {
     /**
      * 获取评论区内容
      */
-    @ResponseBody
-    @RequestMapping(value = "/get_comments")
-    public String get_comments(){
+//    @ResponseBody
+    @RequestMapping(value = "/get_comments",method = RequestMethod.POST)
+    public String get_comments(@RequestParam("article_id")String article_id){
+        System.out.println("ok");
+        System.out.println(article_id);
+
         return "skjafl";
     }
 
@@ -383,15 +389,21 @@ public class ArticleManagement {
      * 获取发表评论区内容并加到数据库
      */
     @RequestMapping(value = "/upload_comment",method = RequestMethod.POST)
-    public void upload_article(@RequestParam("article_id") int article_id,@RequestParam("comment") String comment){
-            System.out.println("++++++++++++");
+    public String upload_article(@RequestParam("article_id") String article_id,@RequestParam("comment") String comment){
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
             String time = simpleDateFormat.format(date);
             String speaker=CookieCheck();
-            CommentService.insert_comment(speaker,article_id,comment,time);
+
+            if(speaker==null){
+                return "redirect:/error_page";
+            }
+
+            int trans_article_id=Integer.parseInt(article_id);
+
+            CommentService.insert_comment(speaker,trans_article_id,comment,time);
             String url="/article/view/"+article_id;
-//            return "redirect:"+url;
+            return "redirect:"+url;
 
     }
 

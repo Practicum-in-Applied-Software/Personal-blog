@@ -79,5 +79,4 @@ public interface article_mapper {
      */
     @Update("update article set title=#{title},tags=#{tags},content=#{content},updateTime=#{updateTime},visible=#{visible} where article_id=#{article_id}")
     public void update_article_according_to_article_id_mapper(ArticleList articleList);
-
 }

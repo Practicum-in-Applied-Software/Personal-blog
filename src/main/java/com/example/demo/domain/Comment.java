@@ -10,6 +10,8 @@ public class Comment {
     }
 
     private int article_id;
+    private int id;
+    private int read;
 
     public boolean isIs_read() {
         return is_read;
@@ -67,5 +69,21 @@ public class Comment {
 
     public void setArticle_id(int article_id) {
         this.article_id = article_id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
     }
 }
