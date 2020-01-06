@@ -36,11 +36,11 @@ public class ArticleManagement {
 
     /***
      * 博客列表页面
-     * @param modelMap 页面上要显示的元素
+     * @param model 页面上要显示的元素
      * @return 返回博客列表页面
      */
     @RequestMapping("/bloglist")
-    public String BlogList(ModelMap modelMap){
+    public String BlogList(ModelMap model){
 
         String username=CookieCheck();
         System.out.println(username);
@@ -48,6 +48,8 @@ public class ArticleManagement {
         if(username==null){
             return "redirect:/error_page";
         }
+
+        User user=loginService.User_query(username);
 
         String privilege=cookiesService.getCookies("privilege");
 
@@ -74,8 +76,23 @@ public class ArticleManagement {
             }
         }
 
+        model.addAttribute("user",user);
+
+        int privilege_num=Integer.valueOf(privilege);
+
+        if(privilege_num==0){
+            privilege="Ordinary user";
+        }
+        else if(privilege_num==1){
+            privilege="Administrator";
+        }
+        else{
+            privilege="root";
+        }
+
+        model.addAttribute("privilege",privilege);
         articleLists=DataCut(articleLists);
-        modelMap.addAttribute("articleLists",articleLists);
+        model.addAttribute("articleLists",articleLists);
         return "index/BlogList";
     }
 
@@ -123,12 +140,31 @@ public class ArticleManagement {
     }
 
     @RequestMapping("/addarticle")
-    public String AddArticle(){
+    public String AddArticle(ModelMap model){
         String username=CookieCheck();
 
         if(username==null){
             return "redirect:/error_page";
         }
+
+        User user=loginService.User_query(username);
+
+        model.addAttribute("user",user);
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
 
         return "index/AddArticle";
     }
