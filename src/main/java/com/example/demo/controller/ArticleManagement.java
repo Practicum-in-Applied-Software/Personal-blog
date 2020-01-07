@@ -2,11 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.ArticleList;
 import com.example.demo.domain.Comment;
+import com.example.demo.domain.Likes;
 import com.example.demo.domain.User;
-import com.example.demo.service.CookiesService;
-import com.example.demo.service.LoginService;
-import com.example.demo.service.article_service;
-import com.example.demo.service.comment_service;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,6 +35,9 @@ public class ArticleManagement {
 
     @Autowired
     private comment_service CommentService;
+
+    @Autowired
+    private likes_service LikesService;
 
     /***
      * 博客列表页面
@@ -274,8 +274,9 @@ public class ArticleManagement {
             return "redirect:/article/access_limit";
         }
 
+        String username=CookieCheck();
+
         if(!article.isVisible()){
-            String username=CookieCheck();
 
             if(username==null){
                 return "redirect:/article/access_limit";
@@ -291,13 +292,31 @@ public class ArticleManagement {
             }
         }
 
+        List<Likes> likesList=LikesService.query_likes_according_to_article_id(article_id);
+
+        model.addAttribute("likes_number",likesList.size());
+
+        boolean is_liked=false;
+
+        for(Likes item:likesList){
+            if(item.getLiker().equals(username)){
+                is_liked=true;
+
+                model.addAttribute("likes_id",item.getLikes_id());
+                break;
+            }
+        }
+
+        model.addAttribute("is_liked",is_liked);
         article.setAccess_count(article.getAccess_count()+1);
-        System.out.println(article.getArticle_id());
-        System.out.println(article.getAccess_count());
         ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
         List<Comment> comments=CommentService.get_comments(article_id);
+
         System.out.println(comments);
+        System.out.println(article.getArticle_id());
+        System.out.println(article.getAccess_count());
+
         model.addAttribute("comments",comments);
         return "index/articleview";
     }
@@ -412,6 +431,7 @@ public class ArticleManagement {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
             String time = simpleDateFormat.format(date);
+
             String speaker=CookieCheck();
 
             if(speaker==null){
@@ -420,7 +440,7 @@ public class ArticleManagement {
 
             int trans_article_id=Integer.parseInt(article_id);
 
-            CommentService.insert_comment(speaker,trans_article_id,comment,time);
+            CommentService.insert_comment(speaker,trans_article_id,comment,time,false);
             String url="/article/view/"+article_id;
             return "redirect:"+url;
 
@@ -564,4 +584,32 @@ public class ArticleManagement {
         return ret;
     }
 
+    @RequestMapping(value = "/give_likes",method = RequestMethod.POST)
+    public String give_likes(@RequestParam("article_id") int article_id){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        System.out.println("likes id is "+article_id);
+
+        LikesService.insert_likes(username,article_id,CurrentTime());
+
+        return "redirect:/article/view/"+article_id;
+    }
+
+    @RequestMapping(value = "give_up_likes",method = RequestMethod.POST)
+    public String give_up_likes(@RequestParam("article_id") int article_id,@RequestParam("likes_id") int likes_id){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+        LikesService.delete_likes_according_to_likes_id(likes_id);
+
+        return "redirect:/article/view/"+article_id;
+    }
 }

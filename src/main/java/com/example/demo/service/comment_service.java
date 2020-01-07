@@ -17,7 +17,7 @@ public interface comment_service {
      * @param time 评论时间
      * @param speaker 评论者
      */
-    public void insert_comment(String speaker,int article_id,String content,String time);
+    public void insert_comment(String speaker,int article_id,String content,String time,boolean is_read);
     /**
      * 获取指定article_id下的评论
      * @param article_id 评论的文章的id

@@ -21,8 +21,8 @@ public interface comment_mapper {
      * @param time 评论时间
      * @param speaker 评论者
      */
-    @Insert("insert into comment (speaker,article_id,content,time) values (#{speaker},#{article_id},#{content},#{time})")
-    public void insert_comment(@Param("speaker") String speaker, @Param("article_id")int article_id, @Param("content") String content, @Param("time") String time);
+    @Insert("insert into comment (speaker,article_id,content,time,is_read) values (#{speaker},#{article_id},#{content},#{time},#{is_read})")
+    public void insert_comment(@Param("speaker") String speaker, @Param("article_id")int article_id, @Param("content") String content, @Param("time") String time,@Param("is_read") boolean is_read);
     /**
      * 获取指定article_id下的评论
      * @param article_id 评论的文章的id
