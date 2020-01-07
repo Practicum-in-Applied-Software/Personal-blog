@@ -394,4 +394,10 @@ public class ArticleManagement {
             return "redirect:"+url;
 
     }
+    @RequestMapping("/information/{username}")
+    public String information(@PathVariable("username") String username,ModelMap model){
+        User user=loginService.User_query(username);
+        model.addAttribute("user",user);
+        return "aboutme/aboutme";
+    }
 }

@@ -33,7 +33,7 @@
                         <a class="main-nav-link" href="/popular">热门文章</a>
 
                         <a class="main-nav-link" href="/about/me">
-                            关于<span th:text="${article.getAuthor()}"></span>
+                            <a th:href="@{'/information/'+${article.getAuthor()}}">关于<span th:text="${article.getAuthor()}"></span></a>
                         </a>
                     </nav>
                 </div>
