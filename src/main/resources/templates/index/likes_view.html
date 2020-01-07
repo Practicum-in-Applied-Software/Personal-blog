@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>文章评论查看</title>
+	<title>文章点赞查看</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 
 	<!-- Fonts and icons -->
@@ -187,7 +187,7 @@
 							</div>
 						</li>
 
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a data-toggle="collapse" href="#base2">
 								<i class="fa fa-comments"></i>
 								<p>文章评论查看</p>
@@ -209,7 +209,7 @@
 							</div>
 						</li>
 
-						<li class="nav-item">
+						<li class="nav-item active">
 							<a data-toggle="collapse" href="#base3">
 								<i class="fa fa-thumbs-o-up"></i>
 								<p>文章点赞查看</p>
@@ -245,10 +245,10 @@
 							<div class="card">
 								<div class="card-header">
 									<div class="card-head-row card-tools-still-right" th:if="${view_self}==true">
-										<h4 class="card-title" th:text="${user.getName()}+'的文章评论情况'"></h4>
+										<h4 class="card-title" th:text="${user.getName()}+'的文章点赞情况'"></h4>
 									</div>
 									<div class="card-head-row card-tools-still-right" th:if="${view_self}==false">
-										<h4 class="card-title">他人的文章评论情况</h4>
+										<h4 class="card-title">他人的文章点赞情况</h4>
 									</div>
 								</div>
 								<div class="card-body">
@@ -262,47 +262,17 @@
 														<tr>
 															<th>文章作者</th>
 															<th>文章标题</th>
-															<th>评论者</th>
-															<th>评论内容</th>
-															<th>评论时间</th>
-															<th>是否已读</th>
-															<th>查看评论</th>
+															<th>点赞者</th>
+															<th>点赞时间</th>
 														</tr>
 													</thead>
 
 													<tbody>
-														<tr th:each="comment:${comments}">
-															<td th:text="${comment.getArticle_author()}"></td>
-															<td th:text="${comment.getArticle_title()}"></td>
-															<td th:text="${comment.getSpeaker()}"></td>
-															<td th:text="${comment.getContent()}"></td>
-															<td th:text="${comment.getTime()}"></td>
-
-															<td th:if="${comment.isIs_read()==true}">
-
-																<form action="/flip_comment_status" method="post" style="display: inline-block;">
-
-																	<input name="comment_id" type="text" style="display: none;" th:value="${comment.getId()}">
-																	<input name="view_self" type="text" style="display: none;" th:value="${view_self}">
-																	<input name="is_read" type="text" style="display: none;" th:value="${comment.isIs_read()}">
-																	<button class="btn btn-success" type="submit" style="padding: 2px 6px;">已读</button>
-
-																</form>
-															</td>
-
-															<td th:if="${comment.isIs_read()==false}">
-																<form action="/flip_comment_status" method="post" style="display: inline-block;">
-																	<input name="comment_id" type="text" style="display: none;" th:value="${comment.getId()}">
-																	<input name="view_self" type="text" style="display: none;" th:value="${view_self}">
-																	<input name="is_read" type="text" style="display: none;" th:value="${comment.isIs_read()}">
-																	<button class="btn btn-warning" type="submit" style="padding: 2px 6px;">未读</button>
-																</form>
-															</td>
-
-															<td>
-																<button class="btn btn-outline-primary center" type="button" style="padding: 2px 6px;">查看</button>
-															</td>
-
+														<tr th:each="likes:${likesList}">
+															<td th:text="${likes.getArticle_author()}"></td>
+															<td th:text="${likes.getArticle_title()}"></td>
+															<td th:text="${likes.getLiker()}"></td>
+															<td th:text="${likes.getTime()}"></td>
 														</tr>
 													</tbody>
 

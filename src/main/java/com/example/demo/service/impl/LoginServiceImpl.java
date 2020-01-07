@@ -12,8 +12,14 @@ import java.util.List;
 public class LoginServiceImpl implements LoginService {
     @Autowired
     private LoginMapper loginMapper;
+
     @Override
     public User User_query(String username) {
         return loginMapper.user_query(username);
+    }
+
+    @Override
+    public List<String> query_username_according_to_privilege(int privilege){
+        return loginMapper.query_username_according_to_privilege_mapper(privilege);
     }
 }

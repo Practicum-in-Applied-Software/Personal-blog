@@ -62,7 +62,7 @@ public class ArticleManagement {
 
         if(privilege.equals("1")||privilege.equals("2")){
             articleLists=ArticleService.query_article_according_to_username(username);
-            List<String> alluser=ArticleService.query_username_according_to_privilege(0);
+            List<String> alluser=loginService.query_username_according_to_privilege(0);
             for(String item:alluser){
                 List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
                 for(ArticleList article:tmp){
@@ -72,7 +72,7 @@ public class ArticleManagement {
         }
 
         if(privilege.equals("2")){
-            List<String> alluser=ArticleService.query_username_according_to_privilege(1);
+            List<String> alluser=loginService.query_username_according_to_privilege(1);
             for(String item:alluser){
                 List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
                 for(ArticleList article:tmp){
@@ -463,6 +463,24 @@ public class ArticleManagement {
             return "redirect:/error_page";
         }
 
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+
+        User user=loginService.User_query(username);
+        model.addAttribute("user",user);
+
         boolean view_self=false;
 
         System.out.println(user_viewed);
@@ -480,21 +498,20 @@ public class ArticleManagement {
             if(!user_viewed.equals("all")){
                 return "redirect:/error_page";
             }
-            int prvilege=Integer.valueOf(cookiesService.getCookies("privilege"));
-            if(prvilege<=0){
+            if(privilege<=0){
                 return "redirect:/error_page";
             }
 
             articleLists=new ArrayList<>();
-            for(int i=0;i<prvilege;i++){
-                List<String> authors=ArticleService.query_username_according_to_privilege(i);
+            for(int i=0;i<privilege;i++){
+                List<String> authors=loginService.query_username_according_to_privilege(i);
 
                 for(String tmp:authors){
                     System.out.println(tmp);
                 }
 
-                for(String user:authors){
-                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(user);
+                for(String item:authors){
+                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
                     articleLists.addAll(tmp);
                 }
             }
@@ -505,33 +522,15 @@ public class ArticleManagement {
 
             for(Comment item:commentList_tmp){
                 item.setArticle_title(article.getTitle());
+                item.setArticle_author(article.getAuthor());
                 commentList.add(item);
             }
         }
 
         commentList=comment_cut(commentList);
-
-        User user=loginService.User_query(username);
-
-        model.addAttribute("user",user);
         model.addAttribute("view_self",view_self);
         model.addAttribute("comments",commentList);
 
-        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
-
-        String prvilege_str=null;
-
-
-        if(privilege==0){
-            prvilege_str="Ordinary user";
-        }
-        else if(privilege==1){
-            prvilege_str="Administrator";
-        }
-        else{
-            prvilege_str="root";
-        }
-        model.addAttribute("privilege",prvilege_str);
         return "index/comment_view";
     }
 
@@ -540,8 +539,12 @@ public class ArticleManagement {
 
         for(Comment comment:comments){
 
-            if(comment.getArticle_title().length()>18){
-                comment.setArticle_title(comment.getArticle_title().substring(0,18)+"...");
+            if(comment.getArticle_author().length()>10){
+                comment.setArticle_author(comment.getArticle_author().substring(0,10)+"...");
+            }
+
+            if(comment.getArticle_title().length()>15){
+                comment.setArticle_title(comment.getArticle_title().substring(0,15)+"...");
             }
 
             if(comment.getSpeaker().length()>12){
@@ -611,5 +614,101 @@ public class ArticleManagement {
         LikesService.delete_likes_according_to_likes_id(likes_id);
 
         return "redirect:/article/view/"+article_id;
+    }
+
+    @RequestMapping("/likes_view/{user_viewed}")
+    public String likes_view(@PathVariable("user_viewed") String user_viewed,ModelMap model){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+        User user=loginService.User_query(username);
+        model.addAttribute("user",user);
+
+        boolean view_self=false;
+
+        List<ArticleList> articleLists=null;
+
+        if(username.equals(user_viewed)){
+            view_self=true;
+            articleLists=ArticleService.query_article_according_to_username(username);
+        }
+        else{
+            if(!user_viewed.equals("all")){
+                return "redirect:/error_page";
+            }
+
+            articleLists=new ArrayList<>();
+            for(int i=0;i<privilege;i++){
+
+                List<String> names=loginService.query_username_according_to_privilege(i);
+
+                for(String item:names){
+                    System.out.print(item+", ");
+                }
+                System.out.println();
+
+                for(String item:names){
+                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
+                    articleLists.addAll(tmp);
+                }
+            }
+        }
+
+        List<Likes> likesList=new ArrayList<>();
+        for(ArticleList article:articleLists){
+            List<Likes> likes=LikesService.query_likes_according_to_article_id(article.getArticle_id());
+
+            for(Likes item:likes){
+                item.setArticle_title(article.getTitle());
+                item.setArticle_author(article.getAuthor());
+            }
+            likesList.addAll(likes);
+        }
+
+        likesList=likes_cut(likesList);
+
+        model.addAttribute("view_self",view_self);
+        model.addAttribute("likesList",likesList);
+
+        return "index/likes_view";
+    }
+
+    //对likes进行处理，过长则用省略号代替
+    public List<Likes> likes_cut(List<Likes> likesList){
+
+        for(Likes item:likesList){
+
+            if(item.getArticle_author().length()>15){
+                item.setArticle_author(item.getArticle_author().substring(0,15)+"...");
+            }
+
+            if(item.getArticle_title().length()>18){
+                item.setArticle_title(item.getArticle_title().substring(0,18)+"...");
+            }
+
+            if(item.getLiker().length()>15){
+                item.setLiker(item.getLiker().substring(0,15)+"...");
+            }
+
+        }
+        return likesList;
     }
 }

@@ -15,11 +15,35 @@ public class Likes {
 
     private String time;
 
+    //为了方便前端显示界面增设的一个字段，数据库中并没有这个字段
+    private String article_title;
+
+    //为了方便前端显示界面增设的一个字段，数据库中并没有这个字段
+    private String article_author;
+
+    public String getArticle_author() {
+        return article_author;
+    }
+
+    public void setArticle_author(String article_author) {
+        this.article_author = article_author;
+    }
+
+    public void setArticle_title(String article_title) {
+        this.article_title = article_title;
+    }
+
+    public String getArticle_title() {
+        return article_title;
+    }
+
     public Likes(int likes_id, String liker, int article_id_liked, String time) {
         this.likes_id = likes_id;
         this.liker = liker;
         this.article_id_liked = article_id_liked;
         this.time = time;
+        article_title = null;
+        article_author = null;
     }
 
     public int getLikes_id() {

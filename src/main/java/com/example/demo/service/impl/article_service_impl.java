@@ -44,11 +44,6 @@ public class article_service_impl implements article_service {
     }
 
     @Override
-    public List<String> query_username_according_to_privilege(int privilege){
-        return ArticleMapper.query_username_according_to_privilege_mapper(privilege);
-    }
-
-    @Override
     public ArticleList query_article_according_to_article_id(int article_id){
         return ArticleMapper.query_article_according_to_article_id_mapper(article_id);
     }
