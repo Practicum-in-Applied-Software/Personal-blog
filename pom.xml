@@ -36,49 +36,36 @@
             </exclusions>
         </dependency>
 
-<<<<<<< HEAD
+        <!--以下是个人配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
-=======
-
-        <!--以下是个人配置-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
->>>>>>> 684d02915709941177394532299bbfe783d6646b
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-<<<<<<< HEAD
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-=======
 
->>>>>>> 684d02915709941177394532299bbfe783d6646b
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.0.0</version>
         </dependency>
 
-<<<<<<< HEAD
-=======
 
         <!--个人配置结束-->
->>>>>>> 684d02915709941177394532299bbfe783d6646b
     </dependencies>
 
     <build>

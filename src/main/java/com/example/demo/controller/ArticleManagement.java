@@ -6,14 +6,16 @@ import com.example.demo.domain.User;
 import com.example.demo.service.CookiesService;
 import com.example.demo.service.LoginService;
 import com.example.demo.service.article_service;
-import org.apache.ibatis.annotations.Param;
+import com.example.demo.service.comment_service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,6 +35,9 @@ public class ArticleManagement {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private comment_service CommentService;
 
     /***
      * 博客列表页面
@@ -291,7 +296,7 @@ public class ArticleManagement {
         System.out.println(article.getAccess_count());
         ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
-        List<Comment> comments=ArticleService.get_comments(article_id);
+        List<Comment> comments=CommentService.get_comments(article_id);
         System.out.println(comments);
         model.addAttribute("comments",comments);
         return "index/articleview";
@@ -304,6 +309,25 @@ public class ArticleManagement {
         if(username==null){
             return "redirect:/error_page";
         }
+
+        User user=loginService.User_query(username);
+
+        model.addAttribute("user",user);
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
 
         ArticleList articleList=ArticleService.query_article_according_to_article_id(article_id);
         if(articleList==null){
@@ -379,6 +403,7 @@ public class ArticleManagement {
 
         return "skjafl";
     }
+
     /**
      * 获取发表评论区内容并加到数据库
      */
@@ -388,16 +413,105 @@ public class ArticleManagement {
             Date date = new Date();
             String time = simpleDateFormat.format(date);
             String speaker=CookieCheck();
+
+            if(speaker==null){
+                return "redirect:/error_page";
+            }
+
             int trans_article_id=Integer.parseInt(article_id);
-            ArticleService.insert_comment(speaker,trans_article_id,comment,time);
+
+            CommentService.insert_comment(speaker,trans_article_id,comment,time);
             String url="/article/view/"+article_id;
             return "redirect:"+url;
 
     }
+
     @RequestMapping("/information/{username}")
     public String information(@PathVariable("username") String username,ModelMap model){
         User user=loginService.User_query(username);
         model.addAttribute("user",user);
         return "aboutme/aboutme";
     }
+
+
+
+    @RequestMapping("/comment_view/{user_viewed}")
+    public String comment_view(@PathVariable("user_viewed") String user_viewed,ModelMap model){
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        boolean view_self=false;
+
+        System.out.println(user_viewed);
+
+        List<Comment> commentList=new ArrayList<>();
+        List<ArticleList> articleLists=null;
+
+
+        if(username.equals(user_viewed)){
+            view_self=true;
+            articleLists=ArticleService.query_article_according_to_username(user_viewed);
+        }
+        //如果不是查看自己的文章评论，则查看权限比自己低一级的所有用户的文章评论
+        else{
+            if(!user_viewed.equals("all")){
+                return "redirect:/error_page";
+            }
+            int prvilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+            if(prvilege<=0){
+                return "redirect:/error_page";
+            }
+
+            articleLists=new ArrayList<>();
+            for(int i=0;i<prvilege;i++){
+                List<String> authors=ArticleService.query_username_according_to_privilege(i);
+
+                for(String tmp:authors){
+                    System.out.println(tmp);
+                }
+
+                for(String user:authors){
+                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(user);
+                    articleLists.addAll(tmp);
+                }
+            }
+        }
+
+        for(ArticleList article:articleLists){
+            List<Comment> commentList_tmp=CommentService.get_comments(article.getArticle_id());
+
+            for(Comment item:commentList_tmp){
+                item.setArticle_title(article.getTitle());
+                commentList.add(item);
+            }
+        }
+
+
+        User user=loginService.User_query(username);
+
+        model.addAttribute("user",user);
+        model.addAttribute("view_self",view_self);
+        model.addAttribute("comments",commentList);
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+        return "index/comment_view";
+    }
+
 }
