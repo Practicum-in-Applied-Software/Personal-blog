@@ -489,6 +489,7 @@ public class ArticleManagement {
             }
         }
 
+        commentList=comment_cut(commentList);
 
         User user=loginService.User_query(username);
 
@@ -512,6 +513,55 @@ public class ArticleManagement {
         }
         model.addAttribute("privilege",prvilege_str);
         return "index/comment_view";
+    }
+
+    //对comment进行处理，过长则用省略号代替
+    public List<Comment> comment_cut(List<Comment> comments){
+
+        for(Comment comment:comments){
+
+            if(comment.getArticle_title().length()>18){
+                comment.setArticle_title(comment.getArticle_title().substring(0,18)+"...");
+            }
+
+            if(comment.getSpeaker().length()>12){
+                comment.setSpeaker(comment.getSpeaker().substring(0,12)+"...");
+            }
+
+            if(comment.getContent().length()>16){
+                comment.setContent(comment.getContent().substring(0,16)+"...");
+            }
+
+        }
+
+        return comments;
+    }
+
+    @RequestMapping(value = "/flip_comment_status",method = RequestMethod.POST)
+    public String flip_comment_status(@RequestParam("comment_id") String comment_id,@RequestParam("view_self") boolean view_self,@RequestParam("is_read") boolean is_read){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        CommentService.update_comment_status(Integer.valueOf(comment_id),!is_read);
+
+        System.out.println("comment_id:"+comment_id);
+
+        System.out.println("view_self:"+view_self);
+
+        String ret=null;
+
+        if(view_self){
+            ret="redirect:/comment_view/"+username;
+        }
+        else{
+            ret="redirect:/comment_view/all";
+        }
+
+        return ret;
     }
 
 }

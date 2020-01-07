@@ -23,4 +23,11 @@ public interface comment_service {
      * @param article_id 评论的文章的id
      */
     public List<Comment> get_comments(int article_id);
+
+    /**
+     * 把特定的文章的评论状态置为is_read
+     * @param id 评论的id
+     * @param is_read 评论的状态
+     */
+    public void update_comment_status(int id,boolean is_read);
 }

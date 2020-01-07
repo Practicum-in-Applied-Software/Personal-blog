@@ -11,7 +11,6 @@ public class Comment {
 
     private int article_id;
     private int id;
-    private int read;
 
     public boolean isIs_read() {
         return is_read;
@@ -30,7 +29,8 @@ public class Comment {
         return article_title;
     }
 
-    public Comment(String speaker, String content, String time, int article_id,boolean is_read) {
+    public Comment(int id, String speaker, String content, String time, int article_id,boolean is_read) {
+        this.id = id;
         this.speaker = speaker;
         this.content = content;
         this.time = time;
@@ -77,13 +77,5 @@ public class Comment {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getRead() {
-        return read;
-    }
-
-    public void setRead(int read) {
-        this.read = read;
     }
 }

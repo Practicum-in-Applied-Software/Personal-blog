@@ -281,7 +281,7 @@
 																<form action="/flip_visible" method="post" style="display: inline-block;">
 																	<input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
 																	<input name="article_status" type="text" style="display: none;" th:value="${item.isVisible()}">
-																	<button class="btn btn-outline-primary center" type="submit" style="padding: 2px 6px;" onclick="javascript:alert(th:text='${item.getArticle_id()}')">
+																	<button class="btn btn-outline-primary center" type="submit" style="padding: 2px 6px;">
 																		公开
 																	</button>
 																</form>

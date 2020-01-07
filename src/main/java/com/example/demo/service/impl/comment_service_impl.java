@@ -25,4 +25,8 @@ public class comment_service_impl implements comment_service {
         return CommentMapper.get_comments(article_id);
     }
 
+    @Override
+    public void update_comment_status(int id,boolean is_read){
+        CommentMapper.update_comment_status_mapper(id,is_read);
+    }
 }

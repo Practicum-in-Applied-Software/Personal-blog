@@ -265,6 +265,7 @@
 															<th>评论内容</th>
 															<th>评论时间</th>
 															<th>是否已读</th>
+															<th>查看评论</th>
 														</tr>
 													</thead>
 
@@ -274,9 +275,32 @@
 															<td th:text="${comment.getSpeaker()}"></td>
 															<td th:text="${comment.getContent()}"></td>
 															<td th:text="${comment.getTime()}"></td>
-															<td th:text="${comment.isIs_read()}">
 
+															<td th:if="${comment.isIs_read()==true}">
+
+																<form action="/flip_comment_status" method="post" style="display: inline-block;">
+
+																	<input name="comment_id" type="text" style="display: none;" th:value="${comment.getId()}">
+																	<input name="view_self" type="text" style="display: none;" th:value="${view_self}">
+																	<input name="is_read" type="text" style="display: none;" th:value="${comment.isIs_read()}">
+																	<button class="btn btn-success" type="submit" style="padding: 2px 6px;">已读</button>
+
+																</form>
 															</td>
+
+															<td th:if="${comment.isIs_read()==false}">
+																<form action="/flip_comment_status" method="post" style="display: inline-block;">
+																	<input name="comment_id" type="text" style="display: none;" th:value="${comment.getId()}">
+																	<input name="view_self" type="text" style="display: none;" th:value="${view_self}">
+																	<input name="is_read" type="text" style="display: none;" th:value="${comment.isIs_read()}">
+																	<button class="btn btn-warning" type="submit" style="padding: 2px 6px;">未读</button>
+																</form>
+															</td>
+
+															<td>
+																<button class="btn btn-outline-primary center" type="button" style="padding: 2px 6px;">查看</button>
+															</td>
+
 														</tr>
 													</tbody>
 
