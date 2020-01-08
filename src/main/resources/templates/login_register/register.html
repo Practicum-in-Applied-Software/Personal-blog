@@ -15,20 +15,49 @@
 <!-- /css files -->
     <script src="./../login_assets/js/jquery-1.11.1.min.js"></script>
     <script src="./../js/register.js"></script>
+
+    <script>
+        var url= window.location.href;
+        var index = url.substring(url.lastIndexOf('?') + 1);
+        if(index==2)
+        {
+            alert("用户名已被注册")
+        }
+        else if(index==3)
+        {
+            alert("两侧密码输入不同");
+        }
+        else if(index==4)
+        {
+            alert("电话号码格式错误");
+        }
+        else if(index==5)
+        {
+            alert("邮箱格式不正确");
+        }
+        else if(index==6)
+        {
+            alert("请填写boy或girl作为性别");
+        }
+        else if(index==7)
+        {
+            alert("请填写所有表单项");
+        }
+    </script>
 </head>
 <body>
 <h1>个人博客注册</h1>
 <div class="log">
 	<div class="content2">
 		<h2>Sign Up Form</h2>
-		<form>
-			<input id="username" type="text" name="username" placeholder="please input username">
-			<input id="phone" type="tel" name="usrtel" placeholder="please input phone number">
-			<input id="email" type="email" name="email" placeholder="please input email">
-			<input id="sex" type="text" name="sex" placeholder="please input boy or girl">
-			<input id="psw" type="password" name="psw" placeholder="please input password">
-            <input id="psw_check" type="password" name="psw_check" placeholder="please input password again">
-			<input type="submit" class="register" value="Register" id="register_btn">
+		<form action="/register_info" method="post">
+			<input id="username" type="text" name="username" placeholder="please input username" required="required">
+			<input id="phone" type="tel" name="usrtel" placeholder="please input phone number"required="required">
+			<input id="email" type="email" name="email" placeholder="please input email"required="required">
+			<input id="sex" type="text" name="sex" placeholder="please input boy or girl"required="required">
+			<input id="psw" type="password" name="psw" placeholder="please input password"required="required">
+            <input id="psw_check" type="password" name="psw_check" placeholder="please input password again"required="required">
+			<input type="submit" class="register" value="Register" >
 		</form>
 	</div>
 	<div class="clear"></div>
