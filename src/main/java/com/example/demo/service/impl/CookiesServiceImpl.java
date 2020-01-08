@@ -45,4 +45,11 @@ public class CookiesServiceImpl implements CookiesService {
         }
         return null;
     }
+
+    @Override
+    public void deleteCookies(String cookieName){
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
 }

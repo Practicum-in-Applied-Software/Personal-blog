@@ -8,4 +8,5 @@ package com.example.demo.service;
 public interface CookiesService {
     public boolean setCookies(String name, String value);
     public String getCookies(String cookieName);
+    public void deleteCookies(String cookieName);
 }

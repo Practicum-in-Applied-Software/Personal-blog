@@ -42,6 +42,7 @@ public class ArticleManagement {
     @Autowired
     private ChangePersonalInfoService changePersonalInfoService;
 
+    @Autowired
     private likes_service LikesService;
 
     /***
@@ -743,6 +744,8 @@ public class ArticleManagement {
         List<ArticleList> articleLists=null;
 
         if(username.equals(user_viewed)){
+
+            System.out.println("okok1");
             view_self=true;
             articleLists=ArticleService.query_article_according_to_username(username);
         }
@@ -768,9 +771,19 @@ public class ArticleManagement {
             }
         }
 
+
         List<Likes> likesList=new ArrayList<>();
+
         for(ArticleList article:articleLists){
+
+            System.out.println(article.getArticle_id());
+            System.out.println(article.getTitle());
+            System.out.println(article.getAuthor());
+
             List<Likes> likes=LikesService.query_likes_according_to_article_id(article.getArticle_id());
+
+            if(likes==null)
+                continue;
 
             for(Likes item:likes){
                 item.setArticle_title(article.getTitle());

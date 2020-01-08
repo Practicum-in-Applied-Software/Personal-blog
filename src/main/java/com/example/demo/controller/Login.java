@@ -23,6 +23,16 @@ public class Login{
         return "login_register/index";
     }
 
+    @RequestMapping("/logout")
+    public String logout(){
+
+        cookiesService.deleteCookies("username");
+        cookiesService.deleteCookies("privilege");
+        cookiesService.deleteCookies("pwd");
+
+        return "redirect:/login";
+    }
+
     @RequestMapping(value = "/check",method = RequestMethod.POST)
     public String check(@RequestParam("form-username") String name, @RequestParam("form-password") String pwd){
         User user=loginService.User_query(name);
