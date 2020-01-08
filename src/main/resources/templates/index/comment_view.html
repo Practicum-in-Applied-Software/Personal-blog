@@ -126,7 +126,7 @@
 										</a>
 									</li>
 									<li>
-										<a href="#edit">
+										<a href="/edit_personal_info">
 											<span class="link-collapse">编辑个人资料</span>
 										</a>
 									</li>
@@ -166,12 +166,12 @@
 							<div class="collapse" id="base">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="#">
+										<a th:href="'/blogstatistics/'+${user.getName()}">
 											<span class="sub-item" th:text="${user.getName()}+'的博客浏览量统计'"></span>
 										</a>
 									</li>
 									<li th:if="${user.getPrivilege()} gt 0">
-										<a href="#">
+										<a href="/blogstatistics/all">
 											<span class="sub-item">其它用户的博客浏览量统计</span>
 										</a>
 									</li>
@@ -258,7 +258,6 @@
 															<th>评论内容</th>
 															<th>评论时间</th>
 															<th>是否已读</th>
-															<th>查看评论</th>
 														</tr>
 													</thead>
 
@@ -289,10 +288,6 @@
 																	<input name="is_read" type="text" style="display: none;" th:value="${comment.isIs_read()}">
 																	<button class="btn btn-warning" type="submit" style="padding: 2px 6px;">未读</button>
 																</form>
-															</td>
-
-															<td>
-																<button class="btn btn-outline-primary center" type="button" style="padding: 2px 6px;">查看</button>
 															</td>
 
 														</tr>

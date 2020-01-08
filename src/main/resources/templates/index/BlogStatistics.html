@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>编辑文章</title>
+	<title>文章浏览量统计</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 
 	<!-- Fonts and icons -->
@@ -13,9 +13,6 @@
 	<script src="/js/jquery-3.3.1.js"></script>
 	<script src="/js/MyJs.js"></script>
 
-
-	<!--editormd插件-->
-	<script src="/editormd/editormd.min.js"></script>
 
 	<script>
 		WebFont.load({
@@ -28,10 +25,6 @@
 	</script>
 
 	<!-- CSS Files -->
-
-	<!--bootstrap-->
-	<!--<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">-->
-
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/assets/css/atlantis.min.css">
 
@@ -40,8 +33,6 @@
 
 	<link rel="stylesheet" href="/css/datatables.min.css">
 
-	<!--editormd插件-->
-	<link rel="stylesheet" href="/editormd/css/editormd.min.css">
 	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 
 </head>
@@ -107,7 +98,6 @@
 								</div>
 							</ul>
 						</li>
-
 					</ul>
 				</div>
 			</nav>
@@ -115,7 +105,7 @@
 		</div>
 
 		<!-- Sidebar -->
-		<div class="sidebar sidebar-style-2">
+		<div class="sidebar sidebar-style-2">			
 			<div class="sidebar-wrapper scrollbar scrollbar-inner">
 				<div class="sidebar-content">
 					<div class="user">
@@ -146,11 +136,10 @@
 									</li>
 								</ul>
 							</div>
-
 						</div>
 					</div>
 					<ul class="nav nav-primary">
-						<li class="nav-item active">
+						<li class="nav-item">
 							<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
 								<i class="fa fa-file-text-o" aria-hidden="true"></i>
 								<p>文章管理</p>
@@ -159,7 +148,7 @@
 							<div class="collapse" id="dashboard">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="/bloglist">
+										<a href="#">
 											<span class="sub-item">文章列表</span>
 										</a>
 									</li>
@@ -172,7 +161,7 @@
 							</div>
 						</li>
 
-						<li class="nav-item">
+						<li class="nav-item active">
 							<a data-toggle="collapse" href="#base">
 								<i class="fas fa-chart-bar"></i>
 								<p>博客浏览量统计</p>
@@ -237,6 +226,7 @@
 								</ul>
 							</div>
 						</li>
+
 					</ul>
 				</div>
 			</div>
@@ -249,61 +239,74 @@
 					<div class="row row-card-no-pd">
 						<div class="col-md-12">
 							<div class="card">
-								<form action="/edit_article" method="post">
-									<input type="text" name="article_id" th:value="${article.getArticle_id()}" style="display: none;">
-									<div class="card-header">
-										<div class="card-head-row card-tools-still-right">
-											<h4 class="card-title">编辑文章</h4>
-											<div class="card-tools">
-												<button class="btn btn-outline-primary center" type="submit">修改</button>
+								<div class="card-header">
+
+									<div class="card-head-row card-tools-still-right" th:if="${view_self}==true">
+										<h4 class="card-title" th:text="${user.getName()}+'的博客浏览量统计'"></h4>
+									</div>
+									<div class="card-head-row card-tools-still-right" th:if="${view_self}==false">
+										<h4 class="card-title">他人的博客浏览量统计</h4>
+									</div>
+
+								</div>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-md-6" style="flex: 0 0 100%;max-width: 100%;">
+											<div>
+
+												<table id="myTable" class="display">
+													<thead>
+														<tr>
+															<th>文章标题</th>
+															<th>作者</th>
+															<th>所属类别</th>
+															<th>内容</th>
+															<th>更新时间</th>
+															<th>状态</th>
+															<th>浏览量</th>
+														</tr>
+													</thead>
+
+													<tbody>
+														<tr th:each="item:${articleLists}">
+															<td>
+																<a th:href="@{'/article/view/'+${item.getArticle_id()}}" th:text="${item.getTitle()}" target="_blank"></a>
+															</td>
+															<td th:text="${item.getAuthor()}"></td>
+															<td th:text="${item.getTags()}"></td>
+															<td th:text="${item.getContent()}"></td>
+															<td th:text="${item.getUpdateTime()}"></td>
+
+															<td th:if="${item.isVisible()==true}">
+																<form action="/flip_visible" method="post" style="display: inline-block;">
+																	<input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
+																	<input name="article_status" type="text" style="display: none;" th:value="${item.isVisible()}">
+																	<button class="btn btn-outline-primary center" type="submit" style="padding: 2px 6px;">
+																		公开
+																	</button>
+																</form>
+															</td>
+															<td th:if="${item.isVisible()==false}">
+																<form action="/flip_visible" method="post" style="display: inline-block;">
+																	<input name="article_id" type="text" style="display: none;" th:value="${item.getArticle_id()}">
+																	<input name="article_status" type="text" style="display: none;" th:value="${item.isVisible()}">
+																	<button class="btn btn-outline-danger center" type="submit" style="padding: 2px 6px;">
+																		私有
+																	</button>
+																</form>
+															</td>
+															<td th:text="${item.getAccess_count()}">
+
+														</tr>
+													</tbody>
+												</table>
 											</div>
 										</div>
 									</div>
-									<div class="card-body">
-										<div class="row">
-											<div style="width: 100%;margin-bottom: 25px;" >
-												<h4>文章标题</h4>
-												<input class="form-control" name="article_name" type="text" placeholder="请输入文章标题" required="required" th:value="${article.getTitle()}">
-											</div>
-
-											<div style="width: 100%;margin-bottom: 25px;">
-												<h4>文章标签</h4>
-												<input class="form-control" name="article_tags" type="text" placeholder="请输入文章标签" th:value="${article.getTags()}">
-											</div>
-
-											<div style="width: 100%;margin-bottom: 25px;">
-												<input type="radio" name="article_status" value="invisible" style="margin-left: 20%;" th:checked="${article.isVisible()==false}">私有
-												<input type="radio" name="article_status" value="visible" style="margin-left: 50%;" th:checked="${article.isVisible()==true}">公开
-											</div>
-
-											<div class="col-md-6" style="flex: 0 0 100%;max-width: 100%;">
-
-												<div id="editor">
-													<textarea style="display:none;" th:text="${article.getContent()}"></textarea>
-
-												</div>
-												<script type="text/javascript">
-													$(function () {
-														var editor = editormd("editor", {
-															width:"100%",
-															height:"1000px",
-															imageUpload:true,
-															imageFormats:["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-															imageUploadURL:"",
-															emoji:true,
-															tex: true,  // 默认不解析
-															path : "/editormd/lib/"
-														});
-													});
-												</script>
-											</div>
-										</div>
-									</div>
-								</form>
+								</div>
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>

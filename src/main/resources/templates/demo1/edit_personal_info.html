@@ -2,21 +2,13 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>编辑文章</title>
+	<title>个人博客后台管理</title>
 	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
 
 	<!-- Fonts and icons -->
-
 	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
-
-	<script src="/js/datatable.js"></script>
-	<script src="/js/jquery-3.3.1.js"></script>
-	<script src="/js/MyJs.js"></script>
-
-
-	<!--editormd插件-->
-	<script src="/editormd/editormd.min.js"></script>
-
+    <script src="/assets/js/core/jquery.3.2.1.min.js"></script>
+    <script src="/js/EditPersonalInfo.js"></script>
 	<script>
 		WebFont.load({
 			google: {"families":["Lato:300,400,700,900"]},
@@ -25,23 +17,28 @@
 				sessionStorage.fonts = true;
 			}
 		});
+        var url= window.location.href;
+        var index = url.substring(url.lastIndexOf('?') + 1);
+        if(index==1)
+        {
+            alert("邮箱格式错误")
+        }
+        else if(index==2)
+        {
+            alert("请填写boy或girl作为性别");
+        }
+        else if(index==3)
+        {
+            alert("电话号码格式错误");
+        }
 	</script>
 
 	<!-- CSS Files -->
-
-	<!--bootstrap-->
-	<!--<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">-->
-
 	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/assets/css/atlantis.min.css">
 
 	<!-- CSS Just for demo purpose, don't include it in your project -->
 	<link rel="stylesheet" href="/assets/css/demo.css">
-
-	<link rel="stylesheet" href="/css/datatables.min.css">
-
-	<!--editormd插件-->
-	<link rel="stylesheet" href="/editormd/css/editormd.min.css">
 	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 
 </head>
@@ -81,7 +78,6 @@
 							</a>
 						</li>
 
-
 						<li class="nav-item dropdown hidden-caret">
 							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
 								<div class="avatar-sm">
@@ -102,12 +98,11 @@
 									</li>
 									<li>
 										<div class="dropdown-divider"></div>
-										<a class="dropdown-item" href="/logout">注销登陆</a>
+										<a class="dropdown-item" href="#">注销登陆</a>
 									</li>
 								</div>
 							</ul>
 						</li>
-
 					</ul>
 				</div>
 			</nav>
@@ -115,7 +110,7 @@
 		</div>
 
 		<!-- Sidebar -->
-		<div class="sidebar sidebar-style-2">
+		<div class="sidebar sidebar-style-2">			
 			<div class="sidebar-wrapper scrollbar scrollbar-inner">
 				<div class="sidebar-content">
 					<div class="user">
@@ -146,7 +141,6 @@
 									</li>
 								</ul>
 							</div>
-
 						</div>
 					</div>
 					<ul class="nav nav-primary">
@@ -242,74 +236,42 @@
 			</div>
 		</div>
 		<!-- End Sidebar -->
-
 		<div class="main-panel">
 			<div class="content">
 				<div class="page-inner">
 					<div class="row row-card-no-pd">
 						<div class="col-md-12">
 							<div class="card">
-								<form action="/edit_article" method="post">
-									<input type="text" name="article_id" th:value="${article.getArticle_id()}" style="display: none;">
-									<div class="card-header">
-										<div class="card-head-row card-tools-still-right">
-											<h4 class="card-title">编辑文章</h4>
-											<div class="card-tools">
-												<button class="btn btn-outline-primary center" type="submit">修改</button>
-											</div>
-										</div>
+								<form role="form" action="/change_personal_info" method="post" >
+									<div class="form-group">
+										<label for="password">修改密码:</label>
+										<input type="password" class="form-control" id="password" name="password">
 									</div>
-									<div class="card-body">
-										<div class="row">
-											<div style="width: 100%;margin-bottom: 25px;" >
-												<h4>文章标题</h4>
-												<input class="form-control" name="article_name" type="text" placeholder="请输入文章标题" required="required" th:value="${article.getTitle()}">
-											</div>
-
-											<div style="width: 100%;margin-bottom: 25px;">
-												<h4>文章标签</h4>
-												<input class="form-control" name="article_tags" type="text" placeholder="请输入文章标签" th:value="${article.getTags()}">
-											</div>
-
-											<div style="width: 100%;margin-bottom: 25px;">
-												<input type="radio" name="article_status" value="invisible" style="margin-left: 20%;" th:checked="${article.isVisible()==false}">私有
-												<input type="radio" name="article_status" value="visible" style="margin-left: 50%;" th:checked="${article.isVisible()==true}">公开
-											</div>
-
-											<div class="col-md-6" style="flex: 0 0 100%;max-width: 100%;">
-
-												<div id="editor">
-													<textarea style="display:none;" th:text="${article.getContent()}"></textarea>
-
-												</div>
-												<script type="text/javascript">
-													$(function () {
-														var editor = editormd("editor", {
-															width:"100%",
-															height:"1000px",
-															imageUpload:true,
-															imageFormats:["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-															imageUploadURL:"",
-															emoji:true,
-															tex: true,  // 默认不解析
-															path : "/editormd/lib/"
-														});
-													});
-												</script>
-											</div>
-										</div>
+									<div class="form-group">
+										<label for="email">修改邮箱:</label>
+										<input type="email" class="form-control" id="email" name="email">
 									</div>
+									<div class="form-group">
+										<label for="sex">修改性别:</label>
+										<input type="text" class="form-control" id="sex" placeholder="please input boy or girl" name="sex">
+									</div>
+									<div class="form-group">
+										<label for="phone">修改联系方式:</label>
+										<input type="text" class="form-control" id="phone" name="phone">
+									</div>
+									<button type="submit" class="btn btn-success" >提交</button>
 								</form>
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
+		
 
 	</div>
 	<!--   Core JS Files   -->
+	<script src="/assets/js/core/jquery.3.2.1.min.js"></script>
 	<script src="/assets/js/core/popper.min.js"></script>
 	<script src="/assets/js/core/bootstrap.min.js"></script>
 
@@ -349,5 +311,6 @@
 	<!-- Atlantis DEMO methods, don't include it in your project! -->
 	<script src="/assets/js/setting-demo.js"></script>
 	<script src="/assets/js/demo.js"></script>
+
 </body>
 </html>

@@ -872,4 +872,64 @@ public class ArticleManagement {
 
         return "index/article_list";
     }
+
+    @RequestMapping("/blogstatistics/{user_viewed}")
+    public String BlogStatistics(@PathVariable("user_viewed") String user_viewed,ModelMap model){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+        User user=loginService.User_query(username);
+        model.addAttribute("user",user);
+
+        boolean view_self=false;
+
+        List<ArticleList> articleLists=null;
+
+        if(user_viewed.equals(username)){
+            view_self=true;
+            articleLists=ArticleService.query_article_according_to_username(username);
+        }
+        else{
+
+            articleLists=new ArrayList<>();
+
+            if(!user_viewed.equals("all")){
+                return "redirect:/error_page";
+            }
+
+            for(int i=0;i<privilege;i++){
+                List<String> names=loginService.query_username_according_to_privilege(i);
+                for(String item:names){
+                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
+
+                    articleLists.addAll(tmp);
+
+                }
+            }
+        }
+
+        articleLists=DataCut(articleLists);
+
+        model.addAttribute("view_self",view_self);
+        model.addAttribute("articleLists",articleLists);
+        return "index/BlogStatistics";
+    }
 }
