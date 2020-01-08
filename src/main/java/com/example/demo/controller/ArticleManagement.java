@@ -448,11 +448,25 @@ public class ArticleManagement {
 
     @RequestMapping("/information/{username}")
     public String information(@PathVariable("username") String username,ModelMap model){
+
         User user=loginService.User_query(username);
+        if(user==null){
+            return "redirect:/error_page";
+        }
+
+        if(user.getEmail()==null){
+            user.setEmail("未知");
+        }
+        if(user.getPhone()==null){
+            user.setPhone("未知");
+        }
+        if(user.getSex()==null){
+            user.setSex("未知");
+        }
+
         model.addAttribute("user",user);
         return "aboutme/aboutme";
     }
-
 
 
     @RequestMapping("/comment_view/{user_viewed}")
@@ -710,5 +724,57 @@ public class ArticleManagement {
 
         }
         return likesList;
+    }
+
+    @RequestMapping("/{author}/article_list")
+    public String author_article(@PathVariable("author") String author,ModelMap model){
+
+        List<ArticleList> tmp=ArticleService.query_article_according_to_username(author);
+
+        String username=CookieCheck();
+
+        boolean f=true;
+
+        //未登录则不允许查看私有文章
+        if(username==null){
+            f=false;
+        }
+        else if(!username.equals(author)){
+
+            //要求查看者的权限大于文章作者的权限，否则不允许查看私有文章
+            int privilege_author=loginService.User_query(author).getPrivilege();
+
+            if(Integer.valueOf(cookiesService.getCookies("privilege"))<=privilege_author){
+                f=false;
+            }
+        }
+
+        List<ArticleList> articleLists=new ArrayList<>();
+
+        if(f){
+            articleLists.addAll(tmp);
+        }
+        else{
+            for(ArticleList item:tmp){
+                if(item.isVisible()){
+                    articleLists.add(item);
+                }
+            }
+        }
+
+        model.addAttribute("author",author);
+
+        if(articleLists.size()>0){
+            model.addAttribute("first_article",articleLists.get(0));
+            articleLists.remove(0);
+        }
+
+        model.addAttribute("articleLists",articleLists);
+
+        for(ArticleList article:articleLists){
+            System.out.println(article.getTitle());
+        }
+
+        return "index/article_list";
     }
 }

@@ -16,6 +16,12 @@
     <script src="/editormd/editormd.js"></script>
     <script src="/js/comment.js"></script>
 
+    <style>
+        a:hover{
+            text-decoration: none;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -23,19 +29,20 @@
         <header id="header" style="position: fixed;width: 100%;z-index: 99999;height: 64px;">
             <div id="header-main" class="header-inner">
                 <div class="outer">
-                    <a href="/" id="logo">
+                    <span id="logo">
                         <span class="site-title" th:text="${article.getAuthor()}"></span>
                         <span class="site-title">的个人博客</span>
-                    </a>
+                    </span>
                     <nav id="main-nav">
 
-                        <a class="main-nav-link" href="/">主页</a>
-
-                        <a class="main-nav-link" href="/popular">热门文章</a>
-
-                        <a class="main-nav-link" href="/about/me">
-                            <a th:href="@{'/information/'+${article.getAuthor()}}">关于<span th:text="${article.getAuthor()}"></span></a>
+                        <a class="main-nav-link" th:href="@{'/'+${article.getAuthor()+'/article_list'}}">
+                            <span th:text="${article.getAuthor()}+'的文章'"></span>
                         </a>
+
+                        <a class="main-nav-link" th:href="@{'/information/'+${article.getAuthor()}}">
+                            关于<span th:text="${article.getAuthor()}"></span>
+                        </a>
+
                     </nav>
                 </div>
             </div>

@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<head xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <meta charset="utf-8">
+    <title th:text="${author}+'的文章'"></title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/editormd/css/editormd.preview.css">
+    <link rel="stylesheet" href="/css/pagination.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/load.css">
+    <script src="/js/jquery-3.3.1.js"></script>
+    <script src="/js/article-content.js"></script>
+    <script src="/js/prettify.min.js"></script>
+    <script src="/js/marked.min.js"></script>
+    <script src="/editormd/editormd.js"></script>
+    <script src="/js/comment.js"></script>
+
+    <style>
+        a:hover{
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <header id="header" style="position: fixed;width: 100%;z-index: 99999;height: 64px;">
+            <div id="header-main" class="header-inner">
+                <div class="outer">
+                    <span id="logo">
+                        <span class="site-title" th:text="${author}"></span>
+                        <span class="site-title">的个人博客</span>
+                    </span>
+                    <nav id="main-nav">
+
+                        <a class="main-nav-link" th:href="@{'/'+${author+'/article_list'}}">
+                            <span th:text="${author}+'的文章'"></span>
+                        </a>
+
+                        <a class="main-nav-link" th:href="@{'/information/'+${author}}">
+                            关于<span th:text="${author}"></span>
+                        </a>
+
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="outer">
+
+            <section id="main" style="float: none;">
+
+                <div style="margin-top: 80px;width: 80%;margin-left: auto;margin-right: auto;">
+                    <article class="article article-type-post">
+                        <div class="article-inner">
+                            <header class="article-header">
+
+                                <h1 class="article-title" itemprop="name">
+                                    <span th:text="${first_article.getTitle()}"></span>
+                                </h1>
+
+                                <div class="article-meta">
+
+                                    <div style="text-transform: none;margin-right: 25px;">
+                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                        <span th:text="${first_article.getAuthor()}"></span>
+                                    </div>
+
+                                    <div class="article-date" style="margin-right: 25px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <time th:text="${first_article.getCreateTime()}"></time>
+                                    </div>
+
+                                    <div class="article-date" style="margin-right: 25px;">
+                                        <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                        <time th:text="${first_article.getUpdateTime()}"></time>
+                                    </div>
+
+                                    <div style="margin-right: 25px;">
+                                        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                        <span th:text="${first_article.getAccess_count()}"></span>
+                                    </div>
+
+                                    <div class="article-tag" style="text-transform: none;">
+                                        <i class="fa fa-tag"></i>
+                                        <span th:text="${first_article.getTags()}"></span>
+                                    </div>
+
+                                </div>
+
+                            </header>
+
+                            <div class="article-more">
+                                <p class="article-more-link">
+                                    <a title=" 查看文章" class="read-more" th:href="'/article/view/'+${first_article.getArticle_id()}" style="cursor: pointer" target="_blank">查看更多</a>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <div th:each="article:${articleLists}" style="margin-top: 40px;width: 80%;margin-left: auto;margin-right: auto;">
+                    <article class="article article-type-post">
+                        <div class="article-inner">
+                            <header class="article-header">
+
+                                <h1 class="article-title" itemprop="name">
+                                    <span th:text="${article.getTitle()}"></span>
+                                </h1>
+
+                                <div class="article-meta">
+
+                                    <div style="text-transform: none;margin-right: 25px;">
+                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                        <span th:text="${article.getAuthor()}"></span>
+                                    </div>
+
+                                    <div class="article-date" style="margin-right: 25px;">
+                                        <i class="fa fa-calendar"></i>
+                                        <time th:text="${article.getCreateTime()}"></time>
+                                    </div>
+
+                                    <div class="article-date" style="margin-right: 25px;">
+                                        <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                        <time th:text="${article.getUpdateTime()}"></time>
+                                    </div>
+
+                                    <div style="margin-right: 25px;">
+                                        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                        <span th:text="${article.getAccess_count()}"></span>
+                                    </div>
+
+                                    <div class="article-tag" style="text-transform: none;">
+                                        <i class="fa fa-tag"></i>
+                                        <span th:text="${article.getTags()}"></span>
+                                    </div>
+
+                                </div>
+
+                            </header>
+
+                            <div class="article-more">
+                                <p class="article-more-link">
+                                    <a title=" 查看文章" class="read-more" th:href="'/article/view/'+${article.getArticle_id()}" style="cursor: pointer" target="_blank">查看更多</a>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </article>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -59,14 +59,6 @@ public class Index {
         return "demo1/index";
     }
 
-
-    @RequestMapping("/night_index")
-    public String night_index(){
-
-
-        return "demo2/index";
-    }
-
     /**
      * 和数据库中的信息进行对比，对Cookie进行验证，防止伪造Cookie
      * @return 返回username

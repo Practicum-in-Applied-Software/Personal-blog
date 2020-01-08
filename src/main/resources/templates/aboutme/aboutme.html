@@ -1,87 +1,33 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="zh">
-<head th:fragment="head">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+
     <meta charset="utf-8">
-    <link rel="stylesheet" href="./../aboutme_assets/style.css">
-    <link rel="stylesheet" type="text/css" href="./../aboutme_assets/about.me.css">
-    <style>
-        a{
-            color: #000;
-        }
-        #footer{
-            position: fixed;
-            bottom: 0;
-            width:100%;
-            height: 30px;
-            background-color: #fbfffc;
-        }
-        body{
-            height: 100%;
-        }
-        .main{
-            position: relative;
+    <title th:text="${user.getName()}+'的个人信息'"></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-        }
-
-    </style>
 </head>
+<body class="demo-two" style="background-image: url(/image/bg-mountain.png)">
 
-<body>
-<div class="main" >
-
-    <div class="account" style="height: 500px;">
-        <div class="account-info">
-            <div class="account-bottom">
-                <div class="tabs">
-                    <nav>
-                        <a><span class="icon1"></span>个人信息</a>
-                    </nav>
-                    <div class="content" style="height:100%">
-                        <div class="text ">
-                            <div class="text-right">
-                                <h4>About Me</h4>
-                                <div class="myinfo">
-                                    <h3 th:text="'姓名 | '+${user.getName()}"></h3>
-                                    <br>
-                                    <h3 th:text="'联系方式 | '+${user.getPhone()}"></h3>
-                                    <br>
-                                    <h3 th:text="'email | '+${user.getEmail()}"></h3>
-                                    <br>
-                                    <h3 th:text="'性别 | '+${user.getSex()}"></h3>
-                                </div>
-                            </div>
-                        </div>
+<section class="hero bg-indigo">
+    <div class="container">
+        <div class="row">
+            <div class="card border-none col-lg-6 col-md-8 col-sm-10 mx-auto bg-texture">
+                <div class="card-body text-white text-center py-4">
+                    <div class="mb-3">
+                        <img src="/image/profile.jpg" alt="Male" class="brand-logo img-fluid rounded-circle"/>
                     </div>
+                    <h1 class="pt-4 text-white h2" th:text="${user.getName()}"></h1>
+
+                    <p class="mt-4 lead text-white" th:text="'联系方式：'+${user.getPhone()}"></p>
+                    <p class="mt-4 lead text-white" th:text="'email：'+${user.getEmail()}"></p>
+                    <p class="mt-4 lead text-white" th:text="'性别：'+${user.getSex()}"></p>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
-<script src="/js/jquery-3.3.1.js"></script>
-<script>
-    $(function () {
-        $(".search-form").attr("hidden",true);
-        $("#search-form-wrap").attr("hidden",true);
-        $('.tabs nav a').on('click', function () {
-            show_content($(this).index());
-        });
-        show_content(0);
-        function show_content(index) {
-            // Make the content visible
-            $('.tabs .content.visible').removeClass('visible');
-            $('.tabs .content:nth-of-type(' + (index + 1) + ')').addClass('visible');
+</section>
 
-            // Set the tab to selected
-            $('.tabs nav a.selected').removeClass('selected');
-            $('.tabs nav a:nth-of-type(' + (index + 1) + ')').addClass('selected');
-        }
-    });
-    addEventListener("load", function () {
-        setTimeout(hideURLbar, 0);
-    }, false);
-    function hideURLbar() {
-        window.scrollTo(0, 1);
-    }
-</script>
 </body>
 </html>

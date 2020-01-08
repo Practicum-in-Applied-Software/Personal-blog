@@ -91,7 +91,7 @@
 											<div class="u-text">
 												<h4 th:text="${user.getName()}" id="username"></h4>
 												<p class="text-muted" th:text="${user.getEmail()}"></p>
-												<a href="profile.html" class="btn btn-xs btn-secondary btn-sm">查看个人资料</a>
+												<a th:href="'/information/'+${user.getName()}" class="btn btn-xs btn-secondary btn-sm" target="_blank">查看个人资料</a>
 											</div>
 										</div>
 									</li>
@@ -129,7 +129,7 @@
 							<div class="collapse in" id="collapseExample">
 								<ul class="nav">
 									<li>
-										<a href="#profile">
+										<a th:href="'/information/'+${user.getName()}" target="_blank">
 											<span class="link-collapse">个人资料</span>
 										</a>
 									</li>
