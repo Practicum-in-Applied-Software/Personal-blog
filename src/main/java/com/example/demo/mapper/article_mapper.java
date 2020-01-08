@@ -47,15 +47,6 @@ public interface article_mapper {
     public void delete_article_mapper(int article_id);
 
     /**
-     * 查询权限为privilege的所有用户的用户名
-     * @param prvilege 需要查询的权限
-     * @return 返回用户名
-     */
-    @Select("select username from user where privilege=#{prvilege}")
-    public List<String> query_username_according_to_privilege_mapper(int prvilege);
-
-
-    /**
      *
      * 查询文章id为article_id的信息
      * @param article_id 文章的id

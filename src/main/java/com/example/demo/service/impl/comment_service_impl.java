@@ -16,8 +16,8 @@ public class comment_service_impl implements comment_service {
 
     //    评论功能
     @Override
-    public void insert_comment(String speaker,int article_id,String content,String time){
-        CommentMapper.insert_comment(speaker,article_id,content,time);
+    public void insert_comment(String speaker,int article_id,String content,String time,boolean is_read){
+        CommentMapper.insert_comment(speaker,article_id,content,time,is_read);
     }
     //    获取文章对应的所有评论
     @Override

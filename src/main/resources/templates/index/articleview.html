@@ -15,6 +15,7 @@
     <script src="/js/marked.min.js"></script>
     <script src="/editormd/editormd.js"></script>
     <script src="/js/comment.js"></script>
+
 </head>
 
 <body>
@@ -71,6 +72,28 @@
                                     <div style="margin-right: 25px;">
                                         <i class="fa fa-bar-chart" aria-hidden="true"></i>
                                         <span th:text="${article.getAccess_count()}"></span>
+                                    </div>
+
+                                    <div style="margin-right: 25px;">
+
+                                        <form action="/give_likes" method="post" style="display: inline-block;" th:if="${is_liked}==false">
+                                            <input name="article_id" style="display: none;" th:value="${article.getArticle_id()}">
+                                            <button type="submit" style="background: white;border: 0px;">
+                                                <img src="/image/like.png" width="16px" height="16px" style="margin-right: 3px;display: inline-block;margin-top: 8px;" id="like" >
+                                            </button>
+                                        </form>
+
+                                        <form action="/give_up_likes" method="post" style="display: inline-block;" th:if="${is_liked}==true">
+
+                                            <input name="article_id" style="display: none;" th:value="${article.getArticle_id()}">
+                                            <input name="likes_id" style="display: none;" th:value="${likes_id}">
+
+                                            <button type="submit" style="background: white;border: 0px;">
+                                                <img src="/image/liked.png" width="16px" height="16px" style="margin-right: 3px;display: inline-block;margin-top: 8px;" id="like" >
+                                            </button>
+                                        </form>
+
+                                        <span th:text="${likes_number}"></span>
                                     </div>
 
                                     <div class="article-tag" style="text-transform: none;">

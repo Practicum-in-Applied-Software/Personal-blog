@@ -21,6 +21,17 @@ public class Comment {
     //新加字段article_title，文章标题，只是方便为了给前端返回数据
     private String article_title;
 
+    //article_author，文章标题，只是方便为了给前端返回数据
+    private String article_author;
+
+    public void setArticle_author(String article_author) {
+        this.article_author = article_author;
+    }
+
+    public String getArticle_author() {
+        return article_author;
+    }
+
     public void setArticle_title(String article_title) {
         this.article_title = article_title;
     }
@@ -37,6 +48,7 @@ public class Comment {
         this.article_id = article_id;
         this.is_read = is_read;
         article_title = null;
+        article_author = null;
     }
 
     public String getSpeaker() {

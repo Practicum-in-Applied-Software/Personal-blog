@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.ArticleList;
 import com.example.demo.domain.Comment;
+import com.example.demo.domain.Likes;
 import com.example.demo.domain.User;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,12 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+
 import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: 金任任
@@ -36,6 +42,8 @@ public class ArticleManagement {
     @Autowired
     private ChangePersonalInfoService changePersonalInfoService;
 
+    private likes_service LikesService;
+
     /***
      * 博客列表页面
      * @param model 页面上要显示的元素
@@ -59,7 +67,7 @@ public class ArticleManagement {
 
         if(privilege.equals("1")||privilege.equals("2")){
             articleLists=ArticleService.query_article_according_to_username(username);
-            List<String> alluser=ArticleService.query_username_according_to_privilege(0);
+            List<String> alluser=loginService.query_username_according_to_privilege(0);
             for(String item:alluser){
                 List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
                 for(ArticleList article:tmp){
@@ -69,7 +77,7 @@ public class ArticleManagement {
         }
 
         if(privilege.equals("2")){
-            List<String> alluser=ArticleService.query_username_according_to_privilege(1);
+            List<String> alluser=loginService.query_username_according_to_privilege(1);
             for(String item:alluser){
                 List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
                 for(ArticleList article:tmp){
@@ -271,8 +279,9 @@ public class ArticleManagement {
             return "redirect:/article/access_limit";
         }
 
+        String username=CookieCheck();
+
         if(!article.isVisible()){
-            String username=CookieCheck();
 
             if(username==null){
                 return "redirect:/article/access_limit";
@@ -288,13 +297,31 @@ public class ArticleManagement {
             }
         }
 
+        List<Likes> likesList=LikesService.query_likes_according_to_article_id(article_id);
+
+        model.addAttribute("likes_number",likesList.size());
+
+        boolean is_liked=false;
+
+        for(Likes item:likesList){
+            if(item.getLiker().equals(username)){
+                is_liked=true;
+
+                model.addAttribute("likes_id",item.getLikes_id());
+                break;
+            }
+        }
+
+        model.addAttribute("is_liked",is_liked);
         article.setAccess_count(article.getAccess_count()+1);
-        System.out.println(article.getArticle_id());
-        System.out.println(article.getAccess_count());
         ArticleService.update_article_access_count_according_to_article_id(article.getArticle_id(),article.getAccess_count());
         model.addAttribute("article",article);
         List<Comment> comments=CommentService.get_comments(article_id);
+
         System.out.println(comments);
+        System.out.println(article.getArticle_id());
+        System.out.println(article.getAccess_count());
+
         model.addAttribute("comments",comments);
         return "index/articleview";
     }
@@ -409,6 +436,7 @@ public class ArticleManagement {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = new Date();
             String time = simpleDateFormat.format(date);
+
             String speaker=CookieCheck();
 
             if(speaker==null){
@@ -417,7 +445,7 @@ public class ArticleManagement {
 
             int trans_article_id=Integer.parseInt(article_id);
 
-            CommentService.insert_comment(speaker,trans_article_id,comment,time);
+            CommentService.insert_comment(speaker,trans_article_id,comment,time,false);
             String url="/article/view/"+article_id;
             return "redirect:"+url;
 
@@ -440,6 +468,24 @@ public class ArticleManagement {
             return "redirect:/error_page";
         }
 
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+
+        User user=loginService.User_query(username);
+        model.addAttribute("user",user);
+
         boolean view_self=false;
 
         System.out.println(user_viewed);
@@ -457,21 +503,20 @@ public class ArticleManagement {
             if(!user_viewed.equals("all")){
                 return "redirect:/error_page";
             }
-            int prvilege=Integer.valueOf(cookiesService.getCookies("privilege"));
-            if(prvilege<=0){
+            if(privilege<=0){
                 return "redirect:/error_page";
             }
 
             articleLists=new ArrayList<>();
-            for(int i=0;i<prvilege;i++){
-                List<String> authors=ArticleService.query_username_according_to_privilege(i);
+            for(int i=0;i<privilege;i++){
+                List<String> authors=loginService.query_username_according_to_privilege(i);
 
                 for(String tmp:authors){
                     System.out.println(tmp);
                 }
 
-                for(String user:authors){
-                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(user);
+                for(String item:authors){
+                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
                     articleLists.addAll(tmp);
                 }
             }
@@ -482,33 +527,15 @@ public class ArticleManagement {
 
             for(Comment item:commentList_tmp){
                 item.setArticle_title(article.getTitle());
+                item.setArticle_author(article.getAuthor());
                 commentList.add(item);
             }
         }
 
         commentList=comment_cut(commentList);
-
-        User user=loginService.User_query(username);
-
-        model.addAttribute("user",user);
         model.addAttribute("view_self",view_self);
         model.addAttribute("comments",commentList);
 
-        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
-
-        String prvilege_str=null;
-
-
-        if(privilege==0){
-            prvilege_str="Ordinary user";
-        }
-        else if(privilege==1){
-            prvilege_str="Administrator";
-        }
-        else{
-            prvilege_str="root";
-        }
-        model.addAttribute("privilege",prvilege_str);
         return "index/comment_view";
     }
 
@@ -517,8 +544,12 @@ public class ArticleManagement {
 
         for(Comment comment:comments){
 
-            if(comment.getArticle_title().length()>18){
-                comment.setArticle_title(comment.getArticle_title().substring(0,18)+"...");
+            if(comment.getArticle_author().length()>10){
+                comment.setArticle_author(comment.getArticle_author().substring(0,10)+"...");
+            }
+
+            if(comment.getArticle_title().length()>15){
+                comment.setArticle_title(comment.getArticle_title().substring(0,15)+"...");
             }
 
             if(comment.getSpeaker().length()>12){
@@ -592,11 +623,11 @@ public class ArticleManagement {
     }
     @RequestMapping(value="/change_personal_info",method = RequestMethod.POST)
     public String change_personal_info( @RequestParam("password") String pwd, @RequestParam("phone") String phone, @RequestParam("email") String email, @RequestParam("sex") String sex,ModelMap model) {
-        User user=loginService.User_query(CookieCheck());
-        String old_password=user.getPwd();
-        String old_email=user.getEmail();
-        String old_sex=user.getSex();
-        String old_phone=user.getPhone();
+        User user = loginService.User_query(CookieCheck());
+        String old_password = user.getPwd();
+        String old_email = user.getEmail();
+        String old_sex = user.getSex();
+        String old_phone = user.getPhone();
         System.out.println("++++++++++++++++++++");
         System.out.println(old_sex);
         System.out.println(old_phone);
@@ -607,43 +638,159 @@ public class ArticleManagement {
         System.out.println(phone);
         System.out.println(email);
         System.out.println(sex);
-        Map<String,String> map=new HashMap<String,String>();
-        if(pwd.length()==0)
-        {
-            pwd=old_password;
+        Map<String, String> map = new HashMap<String, String>();
+        if (pwd.length() == 0) {
+            pwd = old_password;
         }
         //        简单邮箱格式验证
-        if(email.length()==0)
-        {
-            email=old_email;
-        }
-        else if(!email.contains("@"))
-        {
-                map.put("num","1");
-                System.out.println("1");
+        if (email.length() == 0) {
+            email = old_email;
+        } else if (!email.contains("@")) {
+            map.put("num", "1");
+            System.out.println("1");
             return "redirect:/edit_personal_info?1";
         }
         //        性别验证
-        if(sex.length()==0)
-            sex=old_sex;
-        if((!sex.equals("boy")&&!sex.equals("girl")))
-        {
-            map.put("num","2");
+        if (sex.length() == 0)
+            sex = old_sex;
+        if ((!sex.equals("boy") && !sex.equals("girl"))) {
+            map.put("num", "2");
             System.out.println("2");
             return "redirect:/edit_personal_info?2";
         }
         //        电话号码格式验证
-        if(phone.length()==0)
-        {
-            phone=old_phone;
-        }
-        else if(phone.length()!=11)
-        {
-            map.put("num","3");
+        if (phone.length() == 0) {
+            phone = old_phone;
+        } else if (phone.length() != 11) {
+            map.put("num", "3");
             System.out.println("3");
             return "redirect:/edit_personal_info?3";
         }
-        changePersonalInfoService.change_user_info(pwd,email,sex,phone,CookieCheck());
+        changePersonalInfoService.change_user_info(pwd, email, sex, phone, CookieCheck());
         return "/login_register/index";
+    }
+    @RequestMapping(value = "/give_likes",method = RequestMethod.POST)
+    public String give_likes(@RequestParam("article_id") int article_id){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        System.out.println("likes id is "+article_id);
+
+        LikesService.insert_likes(username,article_id,CurrentTime());
+
+        return "redirect:/article/view/"+article_id;
+    }
+
+    @RequestMapping(value = "give_up_likes",method = RequestMethod.POST)
+    public String give_up_likes(@RequestParam("article_id") int article_id,@RequestParam("likes_id") int likes_id){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+        LikesService.delete_likes_according_to_likes_id(likes_id);
+
+        return "redirect:/article/view/"+article_id;
+    }
+
+    @RequestMapping("/likes_view/{user_viewed}")
+    public String likes_view(@PathVariable("user_viewed") String user_viewed,ModelMap model){
+
+        String username=CookieCheck();
+
+        if(username==null){
+            return "redirect:/error_page";
+        }
+
+        int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+        String prvilege_str=null;
+
+        if(privilege==0){
+            prvilege_str="Ordinary user";
+        }
+        else if(privilege==1){
+            prvilege_str="Administrator";
+        }
+        else{
+            prvilege_str="root";
+        }
+        model.addAttribute("privilege",prvilege_str);
+        User user=loginService.User_query(username);
+        model.addAttribute("user",user);
+
+        boolean view_self=false;
+
+        List<ArticleList> articleLists=null;
+
+        if(username.equals(user_viewed)){
+            view_self=true;
+            articleLists=ArticleService.query_article_according_to_username(username);
+        }
+        else{
+            if(!user_viewed.equals("all")){
+                return "redirect:/error_page";
+            }
+
+            articleLists=new ArrayList<>();
+            for(int i=0;i<privilege;i++){
+
+                List<String> names=loginService.query_username_according_to_privilege(i);
+
+                for(String item:names){
+                    System.out.print(item+", ");
+                }
+                System.out.println();
+
+                for(String item:names){
+                    List<ArticleList> tmp=ArticleService.query_article_according_to_username(item);
+                    articleLists.addAll(tmp);
+                }
+            }
+        }
+
+        List<Likes> likesList=new ArrayList<>();
+        for(ArticleList article:articleLists){
+            List<Likes> likes=LikesService.query_likes_according_to_article_id(article.getArticle_id());
+
+            for(Likes item:likes){
+                item.setArticle_title(article.getTitle());
+                item.setArticle_author(article.getAuthor());
+            }
+            likesList.addAll(likes);
+        }
+
+        likesList=likes_cut(likesList);
+
+        model.addAttribute("view_self",view_self);
+        model.addAttribute("likesList",likesList);
+
+        return "index/likes_view";
+    }
+
+    //对likes进行处理，过长则用省略号代替
+    public List<Likes> likes_cut(List<Likes> likesList){
+
+        for(Likes item:likesList){
+
+            if(item.getArticle_author().length()>15){
+                item.setArticle_author(item.getArticle_author().substring(0,15)+"...");
+            }
+
+            if(item.getArticle_title().length()>18){
+                item.setArticle_title(item.getArticle_title().substring(0,18)+"...");
+            }
+
+            if(item.getLiker().length()>15){
+                item.setLiker(item.getLiker().substring(0,15)+"...");
+            }
+
+        }
+        return likesList;
     }
 }
