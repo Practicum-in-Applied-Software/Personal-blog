@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>个人博客后台管理</title>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+
+	<!-- Fonts and icons -->
+	<script src="/assets/js/plugin/webfont/webfont.min.js"></script>
+    <script src="/assets/js/core/jquery.3.2.1.min.js"></script>
+    <script src="/js/EditPersonalInfo.js"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Lato:300,400,700,900"]},
+			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['/assets/css/fonts.min.css']},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+        var url= window.location.href;
+        var index = url.substring(url.lastIndexOf('?') + 1);
+        if(index==1)
+        {
+            alert("邮箱格式错误")
+        }
+        else if(index==2)
+        {
+            alert("请填写boy或girl作为性别");
+        }
+        else if(index==3)
+        {
+            alert("电话号码格式错误");
+        }
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/atlantis.min.css">
+
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link rel="stylesheet" href="/assets/css/demo.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+</head>
+<body>
+	<div class="wrapper">
+		<div class="main-header">
+			<!-- Logo Header -->
+			<div class="logo-header" data-background-color="blue" style="padding-left: 0px;">
+				
+				<a href="/index" class="logo">
+					<!--<p>个人博客后台管理</p>-->
+					<img src="/image/title.png" width="200px" height="46px" alt="image loading" class="navbar-brand" style="margin-top: 6px;">
+				</a>
+				<button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon">
+						<i class="icon-menu"></i>
+					</span>
+				</button>
+				<button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+				<div class="nav-toggle">
+					<button class="btn btn-toggle toggle-sidebar">
+						<i class="icon-menu"></i>
+					</button>
+				</div>
+			</div>
+			<!-- End Logo Header -->
+
+			<!-- Navbar Header -->
+			<nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+				
+				<div class="container-fluid">
+
+					<ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+						<li class="nav-item toggle-nav-search hidden-caret">
+							<a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+								<i class="fa fa-search"></i>
+							</a>
+						</li>
+
+						<li class="nav-item dropdown hidden-caret">
+							<a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-bell"></i>
+								<span class="notification">4</span>
+							</a>
+
+						</li>
+
+						<li class="nav-item dropdown hidden-caret">
+							<a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+								<div class="avatar-sm">
+									<img src="/image/profile.jpg" alt="..." class="avatar-img rounded-circle">
+								</div>
+							</a>
+							<ul class="dropdown-menu dropdown-user animated fadeIn">
+								<div class="dropdown-user-scroll scrollbar-outer">
+									<li>
+										<div class="user-box">
+											<div class="avatar-lg"><img src="/image/profile.jpg" alt="image profile" class="avatar-img rounded"></div>
+											<div class="u-text">
+												<h4 th:text="${user.getName()}"></h4>
+												<p class="text-muted" th:text="${user.getEmail()}"></p>
+												<a href="profile.html" class="btn btn-xs btn-secondary btn-sm">查看个人资料</a>
+											</div>
+										</div>
+									</li>
+									<li>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#">注销登陆</a>
+									</li>
+								</div>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<!-- End Navbar -->
+		</div>
+
+		<!-- Sidebar -->
+		<div class="sidebar sidebar-style-2">			
+			<div class="sidebar-wrapper scrollbar scrollbar-inner">
+				<div class="sidebar-content">
+					<div class="user">
+						<div class="avatar-sm float-left mr-2">
+							<img src="/image/profile.jpg" alt="..." class="avatar-img rounded-circle">
+						</div>
+						<div class="info">
+							<a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+								<span>
+									<span th:text="${user.getName()}"></span>
+									<span class="user-level" th:text="${privilege}"></span>
+									<span class="caret"></span>
+								</span>
+							</a>
+							<div class="clearfix"></div>
+
+							<div class="collapse in" id="collapseExample">
+								<ul class="nav">
+									<li>
+										<a href="#profile">
+											<span class="link-collapse">个人资料</span>
+										</a>
+									</li>
+									<li>
+										<a href="#edit">
+											<span class="link-collapse">编辑个人资料</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<ul class="nav nav-primary">
+						<li class="nav-item active">
+							<a data-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
+								<i class="fa fa-file-text-o" aria-hidden="true"></i>
+								<p>文章管理</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="dashboard">
+								<ul class="nav nav-collapse">
+									<li>
+										<a href="/bloglist">
+											<span class="sub-item">文章列表</span>
+										</a>
+									</li>
+									<li>
+										<a href="/addarticle">
+											<span class="sub-item">新建文章</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#base">
+								<i class="fas fa-chart-bar"></i>
+								<p>博客浏览量统计</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="base">
+								<ul class="nav nav-collapse">
+									<li>
+										<a href="#">
+											<span class="sub-item" th:text="${user.getName()}+'的博客浏览量统计'"></span>
+										</a>
+									</li>
+									<li th:if="${user.getPrivilege()} gt 0">
+										<a href="#">
+											<span class="sub-item">其它用户的博客浏览量统计</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#base2">
+								<i class="fa fa-comments"></i>
+								<p>文章评论查看</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="base2">
+								<ul class="nav nav-collapse">
+									<li>
+										<a th:href="@{'/comment_view/'+${user.getName()}}">
+											<span class="sub-item" th:text="'查看'+${user.getName()}+'的文章评论'"></span>
+										</a>
+									</li>
+									<li th:if="${user.getPrivilege()} gt 0">
+										<a href="/comment_view/all">
+											<span class="sub-item">查看其它用户的文章评论</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+
+						<li class="nav-item">
+							<a data-toggle="collapse" href="#base3">
+								<i class="fa fa-thumbs-o-up"></i>
+								<p>文章点赞查看</p>
+								<span class="caret"></span>
+							</a>
+							<div class="collapse" id="base3">
+								<ul class="nav nav-collapse">
+									<li>
+										<a href="#">
+											<span class="sub-item" th:text="'查看'+${user.getName()}+'的文章点赞'"></span>
+										</a>
+									</li>
+									<li th:if="${user.getPrivilege()} gt 0">
+										<a href="#">
+											<span class="sub-item">查看其它用户的文章点赞</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- End Sidebar -->
+		<div class="main-panel">
+			<div class="content">
+				<div class="page-inner">
+					<div class="row row-card-no-pd">
+						<div class="col-md-12">
+							<div class="card">
+								<form role="form" action="/change_personal_info" method="post" >
+									<div class="form-group">
+										<label for="password">修改密码:</label>
+										<input type="password" class="form-control" id="password" name="password">
+									</div>
+									<div class="form-group">
+										<label for="email">修改邮箱:</label>
+										<input type="email" class="form-control" id="email" name="email">
+									</div>
+									<div class="form-group">
+										<label for="sex">修改性别:</label>
+										<input type="text" class="form-control" id="sex" placeholder="please input boy or girl" name="sex">
+									</div>
+									<div class="form-group">
+										<label for="phone">修改联系方式:</label>
+										<input type="text" class="form-control" id="phone" name="phone">
+									</div>
+									<button type="submit" class="btn btn-success" >提交</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+	</div>
+	<!--   Core JS Files   -->
+	<script src="/assets/js/core/jquery.3.2.1.min.js"></script>
+	<script src="/assets/js/core/popper.min.js"></script>
+	<script src="/assets/js/core/bootstrap.min.js"></script>
+
+	<!-- jQuery UI -->
+	<script src="/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+	<script src="/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+
+	<!-- jQuery Scrollbar -->
+	<script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+
+	<!-- Chart JS -->
+	<script src="/assets/js/plugin/chart.js/chart.min.js"></script>
+
+	<!-- jQuery Sparkline -->
+	<script src="/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+	<!-- Chart Circle -->
+	<script src="/assets/js/plugin/chart-circle/circles.min.js"></script>
+
+	<!-- Datatables -->
+	<script src="/assets/js/plugin/datatables/datatables.min.js"></script>
+
+	<!-- Bootstrap Notify -->
+	<script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+	<!-- jQuery Vector Maps -->
+	<script src="/assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
+	<script src="/assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
+
+	<!-- Sweet Alert -->
+	<script src="/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+	<!-- Atlantis JS -->
+	<script src="/assets/js/atlantis.min.js"></script>
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/assets/js/setting-demo.js"></script>
+	<script src="/assets/js/demo.js"></script>
+
+</body>
+</html>

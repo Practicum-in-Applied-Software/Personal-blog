@@ -3,20 +3,14 @@ package com.example.demo.controller;
 import com.example.demo.domain.ArticleList;
 import com.example.demo.domain.Comment;
 import com.example.demo.domain.User;
-import com.example.demo.service.CookiesService;
-import com.example.demo.service.LoginService;
-import com.example.demo.service.article_service;
-import com.example.demo.service.comment_service;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: 金任任
@@ -38,6 +32,9 @@ public class ArticleManagement {
 
     @Autowired
     private comment_service CommentService;
+
+    @Autowired
+    private ChangePersonalInfoService changePersonalInfoService;
 
     /***
      * 博客列表页面
@@ -563,5 +560,90 @@ public class ArticleManagement {
 
         return ret;
     }
+//    修改个人信息界面
+    @RequestMapping(value="/edit_personal_info")
+    public String edit_personal_info(ModelMap model){
+        String username=CookieCheck();
 
+            if(username==null){
+                return "redirect:/error_page";
+            }
+
+            User user=loginService.User_query(username);
+
+            model.addAttribute("user",user);
+
+            int privilege=Integer.valueOf(cookiesService.getCookies("privilege"));
+
+            String prvilege_str=null;
+
+            if(privilege==0){
+                prvilege_str="Ordinary user";
+            }
+            else if(privilege==1){
+                prvilege_str="Administrator";
+            }
+            else{
+                prvilege_str="root";
+            }
+            model.addAttribute("privilege",prvilege_str);
+
+        return "demo1/edit_personal_info";
+    }
+    @RequestMapping(value="/change_personal_info",method = RequestMethod.POST)
+    public String change_personal_info( @RequestParam("password") String pwd, @RequestParam("phone") String phone, @RequestParam("email") String email, @RequestParam("sex") String sex,ModelMap model) {
+        User user=loginService.User_query(CookieCheck());
+        String old_password=user.getPwd();
+        String old_email=user.getEmail();
+        String old_sex=user.getSex();
+        String old_phone=user.getPhone();
+        System.out.println("++++++++++++++++++++");
+        System.out.println(old_sex);
+        System.out.println(old_phone);
+        System.out.println(old_email);
+        System.out.println(old_password);
+        System.out.println("++++++++++++++++++++");
+        System.out.println(pwd);
+        System.out.println(phone);
+        System.out.println(email);
+        System.out.println(sex);
+        Map<String,String> map=new HashMap<String,String>();
+        if(pwd.length()==0)
+        {
+            pwd=old_password;
+        }
+        //        简单邮箱格式验证
+        if(email.length()==0)
+        {
+            email=old_email;
+        }
+        else if(!email.contains("@"))
+        {
+                map.put("num","1");
+                System.out.println("1");
+            return "redirect:/edit_personal_info?1";
+        }
+        //        性别验证
+        if(sex.length()==0)
+            sex=old_sex;
+        if((!sex.equals("boy")&&!sex.equals("girl")))
+        {
+            map.put("num","2");
+            System.out.println("2");
+            return "redirect:/edit_personal_info?2";
+        }
+        //        电话号码格式验证
+        if(phone.length()==0)
+        {
+            phone=old_phone;
+        }
+        else if(phone.length()!=11)
+        {
+            map.put("num","3");
+            System.out.println("3");
+            return "redirect:/edit_personal_info?3";
+        }
+        changePersonalInfoService.change_user_info(pwd,email,sex,phone,CookieCheck());
+        return "/login_register/index";
+    }
 }
