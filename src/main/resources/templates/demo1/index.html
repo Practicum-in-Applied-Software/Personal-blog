@@ -23,6 +23,8 @@
 
 	<!-- CSS Just for demo purpose, don't include it in your project -->
 	<link rel="stylesheet" href="/assets/css/demo.css">
+    <link rel="stylesheet" href="/css/style.css">
+
 	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 
 </head>
@@ -225,28 +227,51 @@
 			<div class="content">
 				<div class="page-inner">
 
-					<div class="row row-card-no-pd">
+					<div class="row row-card-no-pd" th:each="article:${articleListList}">
 						<div class="col-md-12">
 							<div class="card">
 								<div class="card-header">
-                                    <div class="card-head-row card-tools-still-right">
-                                        <h4 class="card-title">Users Geolocation</h4>
 
+                                    <div class="card-head-row card-tools-still-right">
+                                        <h4 class="card-title" th:text="${article.getTitle()}"></h4>
                                     </div>
 
-									<p class="card-category">
-									Map of the distribution of users around the world</p>
 								</div>
 								<div class="card-body">
 									<div class="row">
 
+                                        <div class="article-date" style="margin-right: 25px;">
+                                            <i class="fa fa-calendar"></i>
+                                            <time th:text="${article.getCreateTime()}"></time>
+                                        </div>
+
+                                        <div class="article-date" style="margin-right: 25px;">
+                                            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                            <time th:text="${article.getUpdateTime()}"></time>
+                                        </div>
+
+                                        <div style="margin-right: 25px;">
+                                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                            <span th:text="${article.getAccess_count()}"></span>
+                                        </div>
+
+                                        <div class="article-tag" style="text-transform: none;">
+                                            <i class="fa fa-tag"></i>
+                                            <span th:text="${article.getTags()}"></span>
+                                        </div>
 
 									</div>
+
+                                    <div class="article-more">
+                                        <p class="article-more-link">
+                                            <a class="read-more" th:href="'/article/view/'+${article.getArticle_id()}" style="cursor: pointer" target="_blank">查看文章</a>
+                                        </p>
+                                    </div>
+
 								</div>
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>

@@ -1,13 +1,17 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.ArticleList;
 import com.example.demo.domain.User;
 import com.example.demo.service.CookiesService;
 import com.example.demo.service.LoginService;
 import com.example.demo.service.article_service;
+import com.example.demo.service.likes_service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * @Author: 金任任
@@ -27,6 +31,9 @@ public class Index {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private likes_service likesService;
 
 
     @RequestMapping("/index")
@@ -56,6 +63,10 @@ public class Index {
             prvilege_str="root";
         }
         model.addAttribute("privilege",prvilege_str);
+
+        List<ArticleList> articleListList=ArticleService.query_article_according_to_username(username);
+        model.addAttribute("articleListList",articleListList);
+
         return "demo1/index";
     }
 
