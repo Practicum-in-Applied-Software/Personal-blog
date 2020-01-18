@@ -700,7 +700,7 @@ public class ArticleManagement {
         return "redirect:/article/view/"+article_id;
     }
 
-    @RequestMapping(value = "give_up_likes",method = RequestMethod.POST)
+    @RequestMapping(value = "/give_up_likes",method = RequestMethod.POST)
     public String give_up_likes(@RequestParam("article_id") int article_id,@RequestParam("likes_id") int likes_id){
 
         String username=CookieCheck();
